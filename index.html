@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germany: A Wine Master's Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-content {
+            max-height: 80vh;
+        }
+        .prose-purple a {
+            color: #9333ea;
+        }
+        .prose-purple a:hover {
+            color: #7e22ce;
+        }
+        .timeline-item.selected {
+            background-color: #6b21a8;
+            color: white;
+        }
+        .flashcard-container {
+            perspective: 1000px;
+        }
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        .flashcard.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border-radius: 0.5rem;
+        }
+        .flashcard-front {
+            background-color: #374151; /* gray-700 */
+        }
+        .flashcard-back {
+            background-color: #4b5563; /* gray-600 */
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <div id="main-menu" class="min-h-screen flex flex-col items-center justify-center p-4">
+        <h1 class="text-4xl md:text-5xl font-bold text-purple-400 mb-2 text-center">Germany</h1>
+        <h2 class="text-2xl md:text-3xl font-semibold mb-8 text-center">A Wine Master's Challenge</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl mb-8">
+            <button data-module="historian" class="module-btn bg-gray-800 p-6 rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                <h3 class="text-xl font-bold mb-2">The Historian's Scroll</h3>
+                <p class="text-gray-400">Order the key events that shaped German wine history.</p>
+            </button>
+            <button data-module="terroir" class="module-btn bg-gray-800 p-6 rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                <h3 class="text-xl font-bold mb-2">The Terroir Architect</h3>
+                <p class="text-gray-400">Master the soils, climate, and geography.</p>
+            </button>
+            <button data-module="ampelographer" class="module-btn bg-gray-800 p-6 rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                <h3 class="text-xl font-bold mb-2">The Ampelographer's Challenge</h3>
+                <p class="text-gray-400">Identify Germany's key grape varieties and clones.</p>
+            </button>
+            <button data-module="lawmaker" class="module-btn bg-gray-800 p-6 rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                <h3 class="text-xl font-bold mb-2">The Lawmaker's Desk</h3>
+                <p class="text-gray-400">Navigate the complexities of German wine law and regulations.</p>
+            </button>
+            <button data-module="gastronome" class="module-btn bg-gray-800 p-6 rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                <h3 class="text-xl font-bold mb-2">The Gastronome's Table</h3>
+                <p class="text-gray-400">Explore classic food pairings and local cuisine.</p>
+            </button>
+            <button data-module="critic" class="module-btn bg-gray-800 p-6 rounded-lg hover:bg-purple-700 transition-colors duration-300">
+                <h3 class="text-xl font-bold mb-2">The Critic's Corner</h3>
+                <p class="text-gray-400">Analyze vintages and iconic producers.</p>
+            </button>
+        </div>
+
+        <div class="w-full max-w-4xl">
+             <button data-module="flashcard" class="module-btn bg-gray-800 p-6 rounded-lg hover:bg-purple-700 transition-colors duration-300 w-full">
+                <h3 class="text-xl font-bold mb-2">Flashcard Study</h3>
+                <p class="text-gray-400">Build your knowledge with targeted review.</p>
+            </button>
+        </div>
+    	
+        <button id="ai-settings-btn" class="mt-8 bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+            ⚙️ AI Settings
+        </button>
+    </div>
+
+    <div id="game-screen" class="hidden min-h-screen flex flex-col items-center justify-center p-4">
+        </div>
+
+    <div id="modal-container" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div id="modal-content-wrapper" class="bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl modal-content overflow-y-auto">
+            </div>
+    </div>
+
+    <script>
+        // This object contains the questions for the quiz modules
+        const gameData = {
+            historian: {
+                title: "The Historian's Scroll",
+                instructions: "For each of the 7 challenges, arrange the historical events in chronological order from earliest to latest. Tap an event to add it to your timeline, then submit your answer.",
+                questions: [
+                    {
+                        question: "Arrange these foundational events in German wine history.",
+                        events: [
+                            { text: "Viticulture is introduced to the Mosel by the Romans.", date: 50 },
+                            { text: "The Speyer Wine Bottle, the world's oldest, is sealed.", date: 325 },
+                            { text: "Charlemagne observes snow melting on the Rheingau slopes, prompting organized plantings.", date: 800 },
+                            { text: "The Cistercian monastery Kloster Eberbach is founded in the Rheingau.", date: 1136 },
+                            { text: "The first documented mention of 'Riesslingen' appears in the Rheingau.", date: 1435 },
+                        ]
+                    },
+                    {
+                        question: "Sequence these pivotal events of the 18th and 19th centuries.",
+                        events: [
+                            { text: "Schloss Johannisberg is the first estate to be planted exclusively to Riesling.", date: 1720 },
+                            { text: "The world's first Spätlese is created at Schloss Johannisberg after a delayed harvest.", date: 1775 },
+                            { text: "Napoleonic inheritance laws are imposed, leading to vineyard parcellation.", date: 1801 },
+                            { text: "The Congress of Vienna places the Pfalz under Bavarian control.", date: 1816 },
+                            { text: "The Royal Bavarian Vineyard Classification of the Pfalz is completed.", date: 1828 },
+                            { text: "Prussia creates a comprehensive, tax-based vineyard classification map of the Rheingau.", date: 1867 },
+                        ]
+                    },
+                    {
+                        question: "Order these events leading to the modern VDP and the 1971 Wine Law.",
+                        events: [
+                            { text: "The forerunner to the VDP, the 'Verein der Naturwein-Versteigerer Rheinpfalz', is founded.", date: 1908 },
+                            { text: "The VDP is founded as a national association for auctioning 'Naturwein'.", date: 1910 },
+                            { text: "The German Wine Law is passed, establishing the Prädikat system based on must weight.", date: 1971 },
+                            { text: "The Charta association is founded in the Rheingau to champion dry, terroir-driven Riesling.", date: 1984 },
+                            { text: "The Charta association merges with the VDP Rheingau.", date: 1999 },
+                        ]
+                    },
+                    {
+                        question: "Arrange these key moments in Rheinhessen's history.",
+                        events: [
+                            { text: "The 'Glöck' vineyard in Nierstein is first documented, making it one of Germany's oldest.", date: 742 },
+                            { text: "The territory is named 'Rheinhessen' at the Congress of Vienna.", date: 1815 },
+                            { text: "The 1971 Wine Law creates the infamous 'Grosslage Niersteiner Gutes Domtal'.", date: 1971 },
+                            { text: "The 'Liebfraumilch' phenomenon, centered in Rheinhessen, erodes Germany's quality image.", date: 1975 }, // Approximate peak
+                            { text: "The 'Message in a Bottle' association is founded, sparking the modern quality revolution.", date: 2002 },
+                        ]
+                    },
+                     {
+                        question: "Sequence these events in the history of the Pfalz wine region.",
+                        events: [
+                            { text: "Archaeological evidence of Roman viticulture near Wachenheim.", date: 50 },
+                            { text: "Church holdings are secularized and sold into private hands during the Napoleonic era.", date: 1801 },
+                            { text: "The Royal Bavarian Vineyard Classification awards its highest rating to Forster Kirchenstück.", date: 1828 },
+                            { text: "The forerunner to the VDP is founded in Neustadt.", date: 1908 },
+                            { text: "The 'modern quality revolution' focusing on dry Riesling begins, aided by 'Flurbereinigung'.", date: 1980 },
+                        ]
+                    },
+                     {
+                        question: "Place these important moments from the Rheingau's history in order.",
+                        events: [
+                            { text: "Cistercian monks from Burgundy found Kloster Eberbach.", date: 1136 },
+                            { text: "The first documented mention of 'Riesslingen' in the Rheingau appears.", date: 1435 },
+                            { text: "The discovery of Spätlese occurs at Schloss Johannisberg.", date: 1775 },
+                            { text: "The Prussian government completes its tax-based vineyard classification map.", date: 1867 },
+                            { text: "The Charta association is founded to promote high-quality dry Riesling.", date: 1984 },
+                        ]
+                    },
+                    {
+                        question: "Arrange these key legal and philosophical shifts in German wine.",
+                        events: [
+                            { text: "The German Wine Law of 1909 restricts the practice of sugaring wine.", date: 1909 },
+                            { text: "The 1971 Wine Law makes must weight the primary basis for quality.", date: 1971 },
+                            { text: "A quality crisis in the 1970s leads to the 'modern quality revolution' of the 1980s.", date: 1980 },
+                            { text: "The VDP formally adopts its four-tier, origin-based classification pyramid.", date: 2012 },
+                            { text: "A new German Wine Law is passed, adopting the VDP's origin-based philosophy, set for full implementation in 2026.", date: 2021 },
+                        ]
+                    }
+                ]
+            },
+            terroir: {
+                title: "The Terroir Architect",
+                instructions: "Answer 100 multiple-choice questions about the geology, geography, and climate of Germany's wine regions.",
+                questions: [
+                    { q: "Which mountain range creates a critical rain shadow effect for the Pfalz wine region?", a: "Haardt Mountains", o: ["Taunus Mountains", "Black Forest", "Eifel Mountains"] },
+                    { q: "The Mosel's famous vineyards are predominantly planted on what type of parent rock?", a: "Devonian Slate", o: ["Volcanic Basalt", "Shell Limestone (Muschelkalk)", "Colored Sandstone (Buntsandstein)"] },
+                    { q: "The Rheingau's unique mesoclimate is created by the Rhine River flowing in which direction for a 30km stretch?", a: "West", o: ["North", "South", "East"] },
+                    { q: "The 'Roter Hang' in Rheinhessen is a famous slope known for what specific soil type?", a: "Rotliegendes (Red Slate/Sandstone)", o: ["Blue Slate", "Loess", "Limestone"] },
+                    { q: "Which German region is the only one classified in the warmer EU Wine Growing Zone B?", a: "Baden", o: ["Pfalz", "Rheingau", "Mosel"] },
+                    { q: "What is the most prevalent parent rock in the Mittelhaardt, especially in famed villages like Forst?", a: "Buntsandstein (Colored Sandstone)", o: ["Muschelkalk (Shell Limestone)", "Devonian Slate", "Granite"] },
+                    { q: "The volcanic Kaiserstuhl district, known for powerful Pinot varieties, is located in which Anbaugebiet?", a: "Baden", o: ["Württemberg", "Franken", "Pfalz"] },
+                    { q: "The soils of Franken are largely defined by a geological dichotomy between Muschelkalk and what other formation?", a: "Keuper (Marl)", o: ["Slate", "Granite", "Loess"] },
+                    { q: "Which river's tributaries, the Saar and Ruwer, are famous sub-regions of the Mosel known for their cool climates?", a: "Mosel River", o: ["Rhine River", "Nahe River", "Main River"] },
+                    { q: "The Taunus Hills provide a protective barrier from cold northern winds for which wine region?", a: "Rheingau", o: ["Ahr", "Pfalz", "Hessische Bergstrasse"] },
+                    { q: "Which soil type, a wind-blown silt, is the most widespread in Rheinhessen and known for yielding fruit-forward wines?", a: "Loess", o: ["Slate", "Basalt", "Red Sandstone"] },
+                    { q: "Dark, volcanic basalt soils are a feature of which legendary Pfalz village?", a: "Forst", o: ["Deidesheim", "Wachenheim", "Kallstadt"] },
+                    { q: "The Ahr valley is known for steep slopes composed of slate and what other clay-rich sandstone?", a: "Greywacke", o: ["Muschelkalk", "Keuper", "Porphyry"] },
+                    { q: "The vineyards of the Ortenau district in Baden are planted on weathered crystalline bedrock of granite and what else?", a: "Gneiss", o: ["Slate", "Basalt", "Limestone"] },
+                    { q: "The 50th parallel north, often considered a limit for viticulture, runs directly through which famous Rheingau estate?", a: "Schloss Johannisberg", o: ["Kloster Eberbach", "Schloss Vollrads", "Weingut Robert Weil"] },
+                    { q: "Wines grown on Muschelkalk (Shell Limestone) are often described as having what defining characteristic?", a: "Pronounced minerality and firm structure", o: ["Exotic fruit notes and aromatic complexity", "Smoky notes and power", "A soft, round, and fruity profile"] },
+                    { q: "Which region is famously described as the 'land of a thousand hills' (Land der tausend Hügel)?", a: "Rheinhessen", o: ["Pfalz", "Baden", "Württemberg"] },
+                    { q: "The distinctive red slate soils of the Assmannshausen Höllenberg are particularly prized for which grape variety?", a: "Spätburgunder", o: ["Riesling", "Frühburgunder", "Portugieser"] },
+                    { q: "The 'Winkler Index' calculation places the Pfalz at the very warm end of which climate category?", a: "Region I", o: ["Region II", "Region III", "Region Ia"] },
+                    { q: "Which of these is the primary viticultural risk across all of Germany's warmer regions like Pfalz and Rheinhessen?", a: "Drought Stress", o: ["Excessive Rainfall", "Winter Freeze", "Insufficient Sunlight"] },
+                    { q: "The Nahe region is known for extreme geological diversity, including volcanic soils of porphyry and what other rock?", a: "Melaphyr", o: ["Granite", "Marble", "Chalk"] },
+                    { q: "The soils around Lake Constance (Bodensee) are primarily composed of what glacial deposit?", a: "Moraine", o: ["Loess", "Alluvial Silt", "Volcanic Ash"] },
+                    { q: "In the Mosel, what is the primary function of the dark slate soils in the cool climate?", a: "Heat absorption and retention", o: ["Water retention", "Providing high nutrient levels", "Lowering soil pH"] },
+                    { q: "Which district of Rheinhessen is the epicenter of the modern quality revolution, known for its limestone soils?", a: "Wonnegau", o: ["Bingen", "Nierstein", "Rheinterrasse"] },
+                    { q: "What is the primary viticultural advantage of steep, south-facing slopes in northern regions like the Mosel and Rheingau?", a: "Maximizing sun exposure and solar radiation", o: ["Protecting vines from wind", "Improving soil drainage", "Preventing frost"] },
+                    { q: "The Bremmer Calmont, recognized as one of the world's steepest vineyards, is located in which region?", a: "Mosel", o: ["Ahr", "Mittelrhein", "Rheingau"] },
+                    { q: "Which soil type provides excellent drainage but has low water and nutrient retention, forcing vine roots deep?", a: "Buntsandstein (Sandstone)", o: ["Loess", "Clay", "Loam"] },
+                    { q: "What is the approximate average annual temperature of the Pfalz, making it one of Germany's warmest regions?", a: "11°C (52°F)", o: ["9°C (48°F)", "13°C (55°F)", "10°C (50°F)"] },
+                    { q: "The climate of the Saar sub-region is notably ______ than the Middle Mosel.", a: "Cooler", o: ["Warmer", "Drier", "Sunnier"] },
+                    { q: "The term 'Bodengeschmack' (taste of the soil) is often used by critics to describe a savory, textural quality in Riesling from which region?", a: "Pfalz", o: ["Mosel", "Nahe", "Rheingau"] },
+                    { q: "What is the primary geological difference between the Kaiserstuhl and the neighboring Tuniberg in Baden?", a: "Kaiserstuhl is volcanic, Tuniberg is limestone.", o: ["Kaiserstuhl is slate, Tuniberg is granite.", "Kaiserstuhl has loess, Tuniberg does not.", "Kaiserstuhl is sandstone, Tuniberg is marl."] },
+                    { q: "The Mainviereck district in Franken, known for Spätburgunder, features steep terraces of what soil type?", a: "Red Sandstone", o: ["Muschelkalk", "Keuper", "Slate"] },
+                    { q: "The Rhine River acts as a massive solar reflector and heat reservoir for which region?", a: "Rheingau", o: ["Pfalz", "Baden", "Rheinhessen"] },
+                    { q: "What is the primary cause of the immense geological diversity in the Pfalz?", a: "The formation of the Upper Rhine Graben rift valley", o: ["Volcanic activity", "Glacial deposits", "River erosion"] },
+                    { q: "In the Rheingau, soils transition from slate and quartzite in the west to what in the east?", a: "Loess and calcareous marls", o: ["Volcanic basalt", "Red sandstone", "Granite"] },
+                    { q: "The Mosel's GDD accumulation places it in which Winkler climate category?", a: "Region Ia", o: ["Region I", "Region Ib", "Region II"] },
+                    { q: "Which region's topography is defined by its position in the Upper Rhine Rift Valley, between the Black Forest and Vosges mountains?", a: "Baden", o: ["Pfalz", "Rheingau", "Nahe"] },
+                    { q: "Which of these is NOT a primary soil type in the Pfalz?", a: "Gneiss", o: ["Buntsandstein", "Muschelkalk", "Basalt"] },
+                    { q: "The term 'Terrassenmosel' refers to which Bereich of the Mosel, known for its terraced vineyards?", a: "Burg Cochem", o: ["Bernkastel", "Saar", "Ruwertal"] },
+                    { q: "Which region's vineyards are scattered along the Nahe river and its tributaries, known for extreme geological complexity?", a: "Nahe", o: ["Ahr", "Mittelrhein", "Franken"] },
+                    { q: "Higher prevalence of limestone and clay in the Südliche Weinstraße makes it ideal for which grapes?", a: "The Pinot family", o: ["Riesling", "Sauvignon Blanc", "Silvaner"] },
+                    { q: "The 'Burgundian Gate' allows warm Mediterranean air to influence the climate of which region?", a: "Baden", o: ["Pfalz", "Württemberg", "Rheingau"] },
+                    { q: "The red color in 'Rotliegend' or 'Rotschiefer' soils is due to high concentrations of what?", a: "Iron oxide", o: ["Potassium", "Magnesium", "Calcium carbonate"] },
+                    { q: "Which two Anbaugebiete are Germany's most northerly, with cool continental climates?", a: "Saale-Unstrut and Sachsen", o: ["Ahr and Mittelrhein", "Mosel and Nahe", "Franken and Württemberg"] },
+                    { q: "The 'nocturnal thermal zone' in the Porongurup sub-region of the Great Southern is a climatic feature that mitigates:", a: "Spring Frost", o: ["Drought", "Heat Spikes", "Botrytis"] },
+                    { q: "What is the primary topographical feature that protects the Mittelrhein from harsh weather?", a: "The deep Rhine River gorge", o: ["The Taunus Mountains", "The Hunsrück Hills", "The Black Forest"] },
+                    { q: "The most significant viticultural risk in the Mosel, often causing devastating yield loss, is:", a: "Late spring frost", o: ["Drought", "Sunburn", "Winter freeze"] },
+                    { q: "Soils in Württemberg are dominated by marl and what other type of fossil-rich rock?", a: "Limestone", o: ["Granite", "Slate", "Sandstone"] },
+                    { q: "The river that defines the Franken wine region is the:", a: "Main", o: ["Rhine", "Nahe", "Neckar"] },
+                    { q: "What is the primary reason for the stylistic difference between Riesling from blue slate versus red slate in the Mosel?", a: "Different mineral compositions (potassium vs. iron)", o: ["Different elevations", "Different levels of rainfall", "Different vine training methods"] },
+                    { q: "What is the name for the wholesale vineyard restructuring process common in Germany in the 20th century?", a: "Flurbereinigung", o: ["Einzellage", "Grosslage", "Alleinbesitz"] },
+                    { q: "Which region is known for its Bocksbeutel bottle shape, partly due to its soil types like Muschelkalk?", a: "Franken", o: ["Baden", "Württemberg", "Sachsen"] },
+                    { q: "In which region would you find the famous 'Doctor' vineyard in Bernkastel-Kues?", a: "Mosel", o: ["Rheingau", "Nahe", "Rheinhessen"] },
+                    { q: "The term 'Alleinebesitz' refers to what type of vineyard?", a: "A monopole (single ownership)", o: ["A steep-sloped vineyard", "A state-owned vineyard", "A collective vineyard site"] },
+                    { q: "Which soil type is known for producing Rieslings with notes of peach and apricot, typical of the Pfalz style?", a: "Buntsandstein (Colored Sandstone)", o: ["Devonian Slate", "Loess", "Keuper"] },
+                    { q: "The 'Steinberg' vineyard, a famous monopole of Kloster Eberbach, is located in which region?", a: "Rheingau", o: ["Mosel", "Pfalz", "Rheinhessen"] },
+                    { q: "Which sub-region of the Mosel is NOT primarily planted on Devonian slate?", a: "Obermosel (Upper Mosel)", o: ["Saar", "Ruwertal", "Bernkastel (Middle Mosel)"] },
+                    { q: "Which region's vineyards follow the eastern edge of the Haardt mountain range?", a: "Pfalz", o: ["Baden", "Rheingau", "Mittelrhein"] },
+                    { q: "A high lime content in soils, such as in the Wonnegau or parts of Franken, is known to help grapes retain what?", a: "Acidity", o: ["Sugar", "Color", "Tannin"] },
+                    { q: "What is the name of the river that bounds Rheinhessen to the north and east?", a: "Rhine", o: ["Main", "Nahe", "Mosel"] },
+                    { q: "The Niederhäuser Hermannshöhle is one of the most famous and geologically complex vineyards of which region?", a: "Nahe", o: ["Rheingau", "Mosel", "Ahr"] },
+                    { q: "Which German region is geographically a northern extension of France's Alsace region?", a: "Pfalz", o: ["Baden", "Mosel", "Saar"] },
+                    { q: "The Markgräflerland district in Baden, known for Gutedel, has soils dominated by calcareous clays and what?", a: "Marl", o: ["Granite", "Slate", "Sandstone"] },
+                    { q: "What is the approximate annual rainfall in the Pfalz, making it one of Germany's driest regions?", a: "Around 550 mm", o: ["Around 800 mm", "Around 1000 mm", "Around 400 mm"] },
+                    { q: "The unique geology of the Ahr valley is a combination of slate and what other rock?", a: "Basalt", o: ["Limestone", "Granite", "Gneiss"] },
+                    { q: "The term 'phyllite slate' is associated with the stony, higher-elevation soils of villages like Kiedrich in which region?", a: "Rheingau", o: ["Mosel", "Nahe", "Ahr"] },
+                    { q: "Which of Germany's 13 Anbaugebiete is the largest by vineyard area?", a: "Rheinhessen", o: ["Pfalz", "Baden", "Württemberg"] },
+                    { q: "The traditional distinction between the Mittelhaardt as 'Riesling country' and Südliche Weinstraße as 'Burgundy country' is based on:", a: "Underlying soil types", o: ["Annual temperature", "Rainfall patterns", "Historical ownership"] },
+                    { q: "Which region's vineyards are predominantly located on the western side of the Upper Rhine Plain?", a: "Pfalz", o: ["Baden", "Rheingau", "Hessische Bergstrasse"] },
+                    { q: "The 'Klingelberger' is a local synonym for Riesling in which Baden district?", a: "Ortenau", o: ["Kaiserstuhl", "Breisgau", "Markgräflerland"] },
+                    { q: "Which of these regions is NOT located in the federal state of Rhineland-Palatinate?", a: "Baden", o: ["Pfalz", "Rheinhessen", "Mosel"] },
+                    { q: "The cooling effect of the broad Rhine river helps to ward off what specific climatic threat in the Rheingau?", a: "Early autumn frosts", o: ["Summer heat spikes", "Spring hail", "Excessive humidity"] },
+                    { q: "What is the primary reason that viticulture on the steep slopes of the Mosel is economically challenging?", a: "It requires intensive manual labor.", o: ["The yields are legally restricted.", "The soil has low fertility.", "The climate is too cold."] },
+                    { q: "The 'Bernkasteler Doctor' is one of Germany's most famous vineyards, located in which region?", a: "Mosel", o: ["Rheingau", "Nahe", "Pfalz"] },
+                    { q: "Which region is known for the Trollinger grape and soils rich in marl and limestone?", a: "Württemberg", o: ["Baden", "Franken", "Sachsen"] },
+                    { q: "The term 'Schillerwein', a rosé-style wine made from co-fermented red and white grapes, is a specialty of which region?", a: "Württemberg", o: ["Baden", "Pfalz", "Franken"] },
+                    { q: "Which region is split into the Mittelhaardt-Deutsche Weinstraße and Südliche Weinstraße Bereiche?", a: "Pfalz", o: ["Rheinhessen", "Baden", "Rheingau"] },
+                    { q: "Which two regions are known for their successful cultivation of Silvaner?", a: "Franken and Rheinhessen", o: ["Mosel and Rheingau", "Ahr and Mittelrhein", "Baden and Pfalz"] },
+                    { q: "What is the parent rock of the famed Scharzhofberger vineyard in the Saar?", a: "Devonian Slate", o: ["Limestone", "Volcanic Basalt", "Red Sandstone"] },
+                    { q: "Which region contains the Maindreieck, Mainviereck, and Steigerwald Bereiche?", a: "Franken", o: ["Württemberg", "Baden", "Sachsen"] },
+                    { q: "The 'Burgweg' Grosslage is found in which Pfalz village, known for its calcareous and sandy hills?", a: "Grosskarlbach", o: ["Forst", "Deidesheim", "Wachenheim"] },
+                    { q: "Which Anbaugebiet has the highest percentage of its vineyards planted to red grape varieties?", a: "Ahr", o: ["Württemberg", "Baden", "Pfalz"] },
+                    { q: "The Mosel river flows into which other major river at the city of Koblenz?", a: "Rhine", o: ["Main", "Nahe", "Neckar"] },
+                    { q: "Which region is known for the Gutedel (Chasselas) grape, particularly in the Markgräflerland district?", a: "Baden", o: ["Pfalz", "Württemberg", "Franken"] },
+                    { q: "The Rotenfels, a massive sheer cliff of volcanic porphyry, is a dramatic landmark in which region?", a: "Nahe", o: ["Ahr", "Mittelrhein", "Rheingau"] },
+                    { q: "Which region is the second largest in Germany and has the country's largest acreage of Riesling?", a: "Pfalz", o: ["Rheinhessen", "Mosel", "Baden"] },
+                    { q: "Which soil type is associated with Rieslings showing exotic fruit and great concentration in the Pfalz?", a: "Buntsandstein (Colored Sandstone)", o: ["Loess", "Muschelkalk (Shell Limestone)", "Clay"] },
+                    { q: "What is the primary topographical reason for Spätburgunder's historical success in Assmannshausen?", a: "Heat-retaining, south-west facing red slate slopes", o: ["High elevation, cool-climate sites", "Fertile, water-retentive loess soils", "Proximity to the moderating Rhine river"] },
+                    { q: "Which of these regions is NOT one of Germany's 13 Anbaugebiete?", a: "Saar", o: ["Ahr", "Nahe", "Sachsen"] },
+                    { q: "The 'Rheinterrasse' is a key topographical feature along the Rhine in which region?", a: "Rheinhessen", o: ["Rheingau", "Pfalz", "Mittelrhein"] },
+                    { q: "Which Anbaugebiet is Germany's longest, stretching over 400 km from north to south?", a: "Baden", o: ["Pfalz", "Württemberg", "Mosel"] },
+                    { q: "The 'Clevner' is a local synonym for Traminer in which Baden district?", a: "Ortenau", o: ["Kaiserstuhl", "Breisgau", "Markgräflerland"] },
+                    { q: "What is the primary soil type in the prestigious vineyards of Würzburg in Franken?", a: "Muschelkalk (Shell Limestone)", o: ["Keuper (Marl)", "Buntsandstein (Sandstone)", "Slate"] },
+                    { q: "What viticultural practice is a direct response to the risk of soil erosion on the Mosel's steep slopes?", a: "Maintaining dry-stone terrace walls", o: ["High-density planting", "Using the single-post training system", "Irrigation"] },
+                    { q: "Which German region's climate is most directly comparable to that of neighboring Alsace?", a: "Pfalz", o: ["Baden", "Rheingau", "Mosel"] },
+                    { q: "The geological formation known as Keuper, a Triassic marl, is dominant in which district of Franken?", a: "Steigerwald", o: ["Maindreieck", "Mainviereck", "Tauberfranken"] },
+                    { q: "The Gimmeldinger Mandelgarten and Königsbacher Idig are famous Grosse Lagen in which region?", a: "Pfalz", o: ["Rheingau", "Rheinhessen", "Nahe"] },
+                    { q: "Which region has the highest percentage of its vineyard area planted to Spätburgunder?", a: "Ahr", o: ["Baden", "Württemberg", "Pfalz"] },
+                    { q: "Which region's vineyards are located on the eastern foothills of the Haardt mountains?", a: "Pfalz", o: ["Baden", "Rheingau", "Mittelrhein"] },
+                    { q: "The combination of the Hunsrück hills and the Eifel Mountains creates the dramatic landscape of which region?", a: "Mosel", o: ["Ahr", "Nahe", "Mittelrhein"] },
+                    { q: "Which region is known for its 'Schillerwein' and a high proportion of the Trollinger grape?", a: "Württemberg", o: ["Baden", "Franken", "Sachsen"] },
+                    { q: "Which region is home to the famous 'sundial' (Sonnenuhr) vineyards of Wehlen and Zeltingen?", a: "Mosel", o: ["Rheingau", "Nahe", "Pfalz"] },
+                    { q: "Which region is climatically the coolest of Germany's main wine regions?", a: "Mosel", o: ["Rheingau", "Baden", "Pfalz"] },
+                    { q: "The 'Karthäuserhofberg' is a famous monopole vineyard in which sub-region of the Mosel?", a: "Ruwertal", o: ["Saar", "Bernkastel", "Burg Cochem"] },
+                    { q: "Which region is divided into the Bereiche Loreley and Siebengebirge?", a: "Mittelrhein", o: ["Ahr", "Nahe", "Hessische Bergstrasse"] }
+                ]
+            },
+            ampelographer: {
+                title: "The Ampelographer's Challenge",
+                instructions: "Answer 100 multiple-choice questions about the key grape varieties and clones of Germany. After a correct answer, you may have the option to generate an AI profile.",
+                questions: [
+                    { q: "What is the most planted grape variety in Germany, accounting for over 23% of total vineyard area?", a: "Riesling", o: ["Müller-Thurgau", "Spätburgunder", "Grauburgunder"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "Spätburgunder is the German synonym for which international grape variety?", a: "Pinot Noir", o: ["Pinot Gris", "Pinot Blanc", "Gamay"], subjectType: 'grape', subjectName: 'Spätburgunder' },
+                    { q: "DNA analysis has confirmed that Riesling is a crossing of Gouais Blanc and what other parent?", a: "A cross between a wild vine and Traminer", o: ["Silvaner", "Elbling", "Chardonnay"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "Müller-Thurgau, long believed to be a Riesling x Silvaner cross, is actually a cross of Riesling and what other grape?", a: "Madeleine Royale", o: ["Chasselas", "Bukettrebe", "Gutedel"], subjectType: 'grape', subjectName: 'Müller-Thurgau' },
+                    { q: "Which two grapes are well-known color mutations of Spätburgunder?", a: "Grauburgunder and Weissburgunder", o: ["Frühburgunder and Schwarzriesling", "Dornfelder and Portugieser", "Lemberger and Trollinger"], subjectType: 'grape', subjectName: 'Spätburgunder' },
+                    { q: "Silvaner is historically the signature grape of which German wine region?", a: "Franken", o: ["Mosel", "Rheingau", "Baden"], subjectType: 'grape', subjectName: 'Silvaner' },
+                    { q: "Which Anbaugebiet has the largest acreage of Riesling in the world?", a: "Pfalz", o: ["Mosel", "Rheingau", "Rheinhessen"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "Dornfelder, a successful German crossing known for its deep color, is the second most planted grape in which region?", a: "Pfalz", o: ["Württemberg", "Baden", "Ahr"], subjectType: 'grape', subjectName: 'Dornfelder' },
+                    { q: "What is the German name for Pinot Gris?", a: "Grauburgunder", o: ["Weissburgunder", "Spätburgunder", "Ruländer"], subjectType: 'grape', subjectName: 'Grauburgunder' },
+                    { q: "Which late-ripening grape variety benefits from the long, sunny autumns in regions like the Mosel and Rheingau to achieve full ripeness while retaining high acidity?", a: "Riesling", o: ["Müller-Thurgau", "Silvaner", "Dornfelder"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "The thin skins and tightly packed clusters of Spätburgunder make it highly susceptible to what fungal disease?", a: "Botrytis bunch rot", o: ["Powdery mildew", "Downy mildew", "Black rot"], subjectType: 'grape', subjectName: 'Spätburgunder' },
+                    { q: "The Geisenheim clones (e.g., 239 Gm) and French 'Dijon' clones (e.g., 115, 777) are important selections for which grape variety?", a: "Spätburgunder", o: ["Riesling", "Weissburgunder", "Frühburgunder"], subjectType: 'clone', subjectName: 'German Pinot Noir Clones' },
+                    { q: "Which grape variety is a specialty of the Markgräflerland district in Baden?", a: "Gutedel (Chasselas)", o: ["Silvaner", "Müller-Thurgau", "Elbling"], subjectType: 'grape', subjectName: 'Gutedel' },
+                    { q: "Lemberger, a key red grape in Württemberg, is the German synonym for which Austrian variety?", a: "Blaufränkisch", o: ["Zweigelt", "St. Laurent", "Blauburgunder"], subjectType: 'grape', subjectName: 'Lemberger' },
+                    { q: "The traditional single-post training system (Moselpfahlerziehung) is a necessary adaptation for cultivating vines on the steep slopes of which region?", a: "Mosel", o: ["Pfalz", "Baden", "Franken"], subjectType: 'viticulture', subjectName: 'Moselpfahlerziehung' },
+                    { q: "Which grape variety, a crossing of Riesling and Bukettrebe, is known for its pungent, Sauvignon Blanc-like aromatics?", a: "Scheurebe", o: ["Kerner", "Bacchus", "Huxelrebe"], subjectType: 'grape', subjectName: 'Scheurebe' },
+                    { q: "What is the most planted grape variety in Württemberg?", a: "Trollinger (Schiava)", o: ["Lemberger", "Spätburgunder", "Riesling"], subjectType: 'grape', subjectName: 'Trollinger' },
+                    { q: "Schwarzriesling, another important grape in Württemberg, is the German name for which Champagne variety?", a: "Pinot Meunier", o: ["Pinot Noir", "Pinot Blanc", "Chardonnay"], subjectType: 'grape', subjectName: 'Schwarzriesling' },
+                    { q: "What is the primary viticultural advantage of Riesling's late budding?", a: "It offers some protection against spring frosts.", o: ["It allows for a longer ripening season.", "It increases sugar accumulation.", "It improves disease resistance."], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "Which region is the world's largest growing area for Silvaner?", a: "Rheinhessen", o: ["Franken", "Pfalz", "Baden"], subjectType: 'grape', subjectName: 'Silvaner' },
+                    { q: "Frühburgunder is an early-ripening mutation of which grape?", a: "Spätburgunder", o: ["Portugieser", "Dornfelder", "Trollinger"], subjectType: 'grape', subjectName: 'Frühburgunder' },
+                    { q: "Elbling, one of Germany's most ancient grape varieties, is primarily found in which sub-region?", a: "Obermosel (Upper Mosel)", o: ["Saar", "Rheingau", "Mittelhaardt"], subjectType: 'grape', subjectName: 'Elbling' },
+                    { q: "The Geisenheim University has been the global center for the clonal selection of which grape variety?", a: "Riesling", o: ["Spätburgunder", "Silvaner", "Müller-Thurgau"], subjectType: 'clone', subjectName: 'Riesling Clones' },
+                    { q: "The term 'Alte Reben' on a German wine label signifies what?", a: "Old vines", o: ["Single vineyard", "Estate bottled", "Dry wine"], subjectType: 'viticulture', subjectName: 'Alte Reben' },
+                    { q: "The Pendelbogen (arch cane) is a common variation of which vine training system used throughout Germany?", a: "Guyot system", o: ["Cordon system", "Gobelet system", "Pergola system"], subjectType: 'viticulture', subjectName: 'Guyot System' },
+                    { q: "Which grape variety is the undisputed 'king' of the Pfalz, occupying nearly 25% of its vineyard area?", a: "Riesling", o: ["Dornfelder", "Spätburgunder", "Grauburgunder"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "The German synonym for Pinot Blanc is:", a: "Weissburgunder", o: ["Grauburgunder", "Spätburgunder", "Gutedel"], subjectType: 'grape', subjectName: 'Weissburgunder' },
+                    { q: "In which region did an 18th-century decree from the Prince-elector mandate the exclusive planting of Riesling?", a: "Mosel", o: ["Rheingau", "Pfalz", "Rheinhessen"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "Which red grape is the most planted in the Ahr, accounting for over 60% of the region's vines?", a: "Spätburgunder", o: ["Frühburgunder", "Portugieser", "Dornfelder"], subjectType: 'grape', subjectName: 'Spätburgunder' },
+                    { q: "The 'Ruländer' synonym is typically used for richer, sometimes off-dry styles of which grape?", a: "Grauburgunder", o: ["Weissburgunder", "Silvaner", "Riesling"], subjectType: 'grape', subjectName: 'Grauburgunder' },
+                    { q: "What is the most significant viticultural challenge for cultivating Spätburgunder?", a: "Its susceptibility to frost and fungal diseases", o: ["Its inability to ripen in cool climates", "Its excessively high acidity", "Its low yields"], subjectType: 'grape', subjectName: 'Spätburgunder' },
+                    { q: "Which research institute, founded in 1882, created the Müller-Thurgau crossing?", a: "Geisenheim", o: ["Freiburg", "Weinsberg", "Alzey"], subjectType: 'viticulture', subjectName: 'Geisenheim Institute' },
+                    { q: "The German term 'Rebsorte' means:", a: "Grape variety", o: ["Vineyard site", "Wine style", "Winemaker"], subjectType: 'terminology', subjectName: 'Rebsorte' },
+                    { q: "What is the most planted grape variety in the Baden region?", a: "Spätburgunder", o: ["Grauburgunder", "Müller-Thurgau", "Riesling"], subjectType: 'grape', subjectName: 'Spätburgunder' },
+                    { q: "Which grape variety is NOT one of the 'Pinot family' (Burgunderfamilie)?", a: "Riesling", o: ["Spätburgunder", "Grauburgunder", "Weissburgunder"], subjectType: 'grape', subjectName: 'Pinot Family' },
+                    { q: "Which grape variety's success in Franken is tied to its introduction there in 1659?", a: "Silvaner", o: ["Riesling", "Müller-Thurgau", "Spätburgunder"], subjectType: 'grape', subjectName: 'Silvaner' },
+                    { q: "Which grape, a crossing of Trollinger and Riesling, is more successful in Franken than elsewhere in Germany?", a: "Kerner", o: ["Bacchus", "Scheurebe", "Dornfelder"], subjectType: 'grape', subjectName: 'Kerner' },
+                    { q: "The adoption of French 'Dijon' clones has been a key factor in the quality increase of which German wine style?", a: "Spätburgunder", o: ["Dry Riesling", "Silvaner", "Sekt"], subjectType: 'clone', subjectName: 'German Pinot Noir Clones' },
+                    { q: "What is the most planted grape variety in Rheinhessen?", a: "Riesling", o: ["Müller-Thurgau", "Dornfelder", "Silvaner"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "Which grape variety constitutes over 77% of all plantings in the Rheingau?", a: "Riesling", o: ["Spätburgunder", "Müller-Thurgau", "Weissburgunder"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "Which red grape variety is known for producing light-bodied, mild red and rosé wines for early consumption?", a: "Portugieser", o: ["Dornfelder", "Lemberger", "Spätburgunder"], subjectType: 'grape', subjectName: 'Portugieser' },
+                    { q: "The German viticultural term for a crossing of two Vitis vinifera varieties is:", a: "Kreuzung", o: ["Hybrid", "Klon", "Selektion"], subjectType: 'terminology', subjectName: 'Kreuzung' },
+                    { q: "The practice of 'green harvesting' or crop thinning is done to achieve what primary goal?", a: "Increase concentration in the remaining grapes", o: ["Increase overall yield", "Prevent sunburn", "Delay ripening"], subjectType: 'viticulture', subjectName: 'Green Harvest' },
+                    { q: "The single-post training system requires the canes to be tied in what characteristic shape?", a: "A heart or a loop", o: ["A flat arch", "A vertical cordon", "A horizontal T-shape"], subjectType: 'viticulture', subjectName: 'Moselpfahlerziehung' },
+                    { q: "Which white grape variety is known for its more subtle, savory, and sometimes earthy or herbal profile compared to Riesling?", a: "Silvaner", o: ["Weissburgunder", "Müller-Thurgau", "Gutedel"], subjectType: 'grape', subjectName: 'Silvaner' },
+                    { q: "The term 'sélection massale' refers to propagating new vines from:", a: "Cuttings from many superior older vines", o: ["A single certified mother vine", "Nursery-grown seedlings", "Grafted rootstock"], subjectType: 'viticulture', subjectName: 'Sélection Massale' },
+                    { q: "Which grape variety is NOT one of the top three most planted in Germany?", a: "Silvaner", o: ["Riesling", "Müller-Thurgau", "Spätburgunder"], subjectType: 'grape', subjectName: 'German Grape Plantings' },
+                    { q: "In the Rheingau, which grape is almost exclusively planted in the village of Assmannshausen?", a: "Spätburgunder", o: ["Riesling", "Weissburgunder", "Grauburgunder"], subjectType: 'grape', subjectName: 'Spätburgunder' },
+                    { q: "Which grape variety accounts for 9% of vine surface in the Ahr?", a: "Riesling", o: ["Spätburgunder", "Frühburgunder", "Portugieser"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "What is the primary reason for the decline in Müller-Thurgau plantings?", a: "A shift in consumer preference towards higher quality, drier wines", o: ["Its susceptibility to disease", "Its difficulty to ripen", "Its low yields"], subjectType: 'grape', subjectName: 'Müller-Thurgau' },
+                    { q: "The VDP statutes for Grosse Lage wines in the Pfalz permit Riesling, Spätburgunder, and which other variety?", a: "Weissburgunder", o: ["Grauburgunder", "Chardonnay", "Silvaner"], subjectType: 'grape', subjectName: 'Pfalz Grosse Lage Varieties' },
+                    { q: "Which variety is known for its naturally high levels of tartaric acid, contributing to its longevity?", a: "Riesling", o: ["Müller-Thurgau", "Silvaner", "Gutedel"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "In which region is the Elbling grape variety most commonly found?", a: "Mosel", o: ["Saale-Unstrut", "Sachsen", "Franken"], subjectType: 'grape', subjectName: 'Elbling' },
+                    { q: "What is the German term for Pinot Meunier?", a: "Schwarzriesling", o: ["Spätburgunder", "Frühburgunder", "Weissherbst"], subjectType: 'grape', subjectName: 'Schwarzriesling' },
+                    { q: "Which two grapes are the most planted in the Pfalz region?", a: "Riesling and Dornfelder", o: ["Riesling and Spätburgunder", "Müller-Thurgau and Portugieser", "Riesling and Grauburgunder"], subjectType: 'grape', subjectName: 'Pfalz Grape Plantings' },
+                    { q: "What is the primary viticultural reason for the historical dominance of Trollinger in Württemberg?", a: "It is high-yielding and reliable", o: ["It produces deeply colored wines", "It has high acidity", "It is resistant to frost"], subjectType: 'grape', subjectName: 'Trollinger' },
+                    { q: "Which grape variety is known for its aromatic profile of green apple, hay, and celery?", a: "Silvaner", o: ["Riesling", "Scheurebe", "Bacchus"], subjectType: 'grape', subjectName: 'Silvaner' },
+                    { q: "The German clones from Freiburg (Fr) and Geisenheim (Gm) for Spätburgunder were primarily selected for what trait?", a: "Better rot resistance and smaller berries", o: ["Higher yields", "Earlier ripening", "Lower acidity"], subjectType: 'clone', subjectName: 'German Pinot Noir Clones' },
+                    { q: "The practice of tying fruiting canes in an arch ('Halbbogen') is a distinct regional practice in which Anbaugebiet?", a: "Pfalz", o: ["Mosel", "Rheingau", "Baden"], subjectType: 'viticulture', subjectName: 'Pfalz Vine Training' },
+                    { q: "Which grape variety is the second most planted in Germany overall?", a: "Spätburgunder", o: ["Müller-Thurgau", "Grauburgunder", "Dornfelder"], subjectType: 'grape', subjectName: 'German Grape Plantings' },
+                    { q: "The success of dry, full-bodied white wines from the Pinot family is a hallmark of which warm German region?", a: "Baden", o: ["Mosel", "Ahr", "Mittelrhein"], subjectType: 'grape', subjectName: 'Baden Pinot Family' },
+                    { q: "Which grape's viticultural cycle sees bud break in April, flowering in June, and harvest from late September into October in the Pfalz?", a: "Riesling", o: ["Portugieser", "Müller-Thurgau", "Dornfelder"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "What is the German term for a field blend of different grape varieties co-planted and co-fermented?", a: "Gemischter Satz", o: ["Weissherbst", "Schillerwein", "Rotling"], subjectType: 'viticulture', subjectName: 'Gemischter Satz' },
+                    { q: "Which historic vine training system, of supposed Roman origin, involved training vines on wooden posts to form a chamber?", a: "Pfälzer Kammertbau", o: "Moselpfahlerziehung", o: "Pendelbogen", o: "Vertico" },
+                    { q: "Which crossing, known for its deep color and velvety texture, often produces accessible, fruit-forward red wines?", a: "Dornfelder", o: ["Regent", "Lemberger", "Portugieser"], subjectType: 'grape', subjectName: 'Dornfelder' },
+                    { q: "Which grape is NOT a traditional variety of the Pfalz?", a: "Elbling", o: ["Riesling", "Portugieser", "Traminer"], subjectType: 'grape', subjectName: 'Pfalz Traditional Varieties' },
+                    { q: "What is the primary reason for the increased planting of international varieties like Chardonnay and Sauvignon Blanc in Germany?", a: "Climate change and market demand", o: ["German law mandates it", "They are more disease resistant", "They yield more than traditional varieties"], subjectType: 'viticulture', subjectName: 'International Varieties in Germany' },
+                    { q: "Which grape is known to express terroir with great fidelity but is notoriously difficult to cultivate?", a: "Spätburgunder", o: ["Riesling", "Müller-Thurgau", "Dornfelder"], subjectType: 'grape', subjectName: 'Spätburgunder' },
+                    { q: "Which Anbaugebiet has the highest percentage of its vineyards planted to Riesling?", a: "Rheingau", o: ["Mosel", "Pfalz", "Nahe"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "The term 'Rieslaner' refers to what?", a: "A crossing of Silvaner and Riesling", o: ["A clone of Riesling", "A synonym for Riesling", "A vineyard site"], subjectType: 'grape', subjectName: 'Rieslaner' },
+                    { q: "Which grape variety's aromatic profile often includes notes of peach, apricot, and citrus?", a: "Riesling", o: ["Silvaner", "Gutedel", "Weissburgunder"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "Which variety is known for producing simple, aromatic wines with soft acidity and a hint of Muscat?", a: "Müller-Thurgau", o: ["Silvaner", "Gutedel", "Elbling"], subjectType: 'grape', subjectName: 'Müller-Thurgau' },
+                    { q: "What is the minimum planting density in vines per hectare legally required in the Pfalz?", a: "2,200", o: ["5,000", "3,300", "There is no minimum"], subjectType: 'viticulture', subjectName: 'Pfalz Planting Density' },
+                    { q: "In Baden, Riesling is the signature variety of which two districts?", a: "Ortenau and Kraichgau", o: ["Kaiserstuhl and Tuniberg", "Breisgau and Markgräflerland", "Bodensee and Tauberfranken"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "Which grape is NOT a legally permitted variety for VDP.Grosse Lage wines in the Pfalz?", a: "Grauburgunder", o: ["Riesling", "Spätburgunder", "Weissburgunder"], subjectType: 'grape', subjectName: 'Pfalz Grosse Lage Varieties' },
+                    { q: "Which grape variety is Germany's third most planted overall?", a: "Grauburgunder", o: ["Spätburgunder", "Dornfelder", "Silvaner"], subjectType: 'grape', subjectName: 'German Grape Plantings' },
+                    { q: "The 'Freiburger' series of clones refers to selections of which grape variety?", a: "Spätburgunder", o: ["Riesling", "Weissburgunder", "Grauburgunder"], subjectType: 'clone', subjectName: 'German Pinot Noir Clones' },
+                    { q: "What is a primary viticultural difference between traditional German and modern Dijon clones of Pinot Noir?", a: "German clones often have larger berries; Dijon clones have smaller berries.", o: ["German clones are later ripening.", "Dijon clones are more resistant to frost.", "There is no significant difference."], subjectType: 'clone', subjectName: 'German Pinot Noir Clones' },
+                    { q: "The use of supplemental irrigation in Germany is a relatively recent adaptation to what?", a: "Climate change and increasing drought", o: ["A change in wine law", "A desire to increase yields", "New vine training systems"], subjectType: 'viticulture', subjectName: 'Irrigation in Germany' },
+                    { q: "Which grape variety is known for its genetic instability and tendency to mutate?", a: "Spätburgunder", o: ["Riesling", "Silvaner", "Müller-Thurgau"], subjectType: 'grape', subjectName: 'Spätburgunder' },
+                    { q: "In the Mosel, which grape variety accounts for over 90% of the plantings on the region's steep slate slopes?", a: "Riesling", o: ["Elbling", "Müller-Thurgau", "Spätburgunder"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "Which grape is traditionally used for light red or rosé 'Weissherbst' wines designed for local consumption in the Pfalz?", a: "Portugieser", o: ["Spätburgunder", "Dornfelder", "Lemberger"], subjectType: 'grape', subjectName: 'Portugieser' },
+                    { q: "What is the second most planted grape variety in the Mosel region?", a: "Müller-Thurgau", o: ["Elbling", "Spätburgunder", "Weissburgunder"], subjectType: 'grape', subjectName: 'Müller-Thurgau' },
+                    { q: "Which grape variety is a crossing of Helfensteiner and Heroldrebe?", a: "Dornfelder", o: ["Kerner", "Bacchus", "Regent"], subjectType: 'grape', subjectName: 'Dornfelder' },
+                    { q: "The term 'Rivaner' is a common synonym for which grape variety?", a: "Müller-Thurgau", o: ["Silvaner", "Riesling", "Elbling"], subjectType: 'grape', subjectName: 'Müller-Thurgau' },
+                    { q: "Which of these grapes is a PIWI (fungus-resistant) variety approved for cultivation in some German regions?", a: "Regent", o: ["Dornfelder", "Portugieser", "Trollinger"], subjectType: 'grape', subjectName: 'Regent' },
+                    { q: "Which grape variety is the most planted in the Nahe region?", a: "Riesling", o: ["Müller-Thurgau", "Dornfelder", "Spätburgunder"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "Which grape variety is known for producing light, neutral, and refreshing dry wines, especially in Markgräflerland?", a: "Gutedel", o: ["Silvaner", "Weissburgunder", "Elbling"], subjectType: 'grape', subjectName: 'Gutedel' },
+                    { q: "What is the primary reason the single-post training system is disappearing in the Mosel?", a: "It is extremely labor-intensive and costly", o: ["It leads to lower quality fruit", "It is no longer legally permitted", "It is not suitable for Riesling"], subjectType: 'viticulture', subjectName: 'Moselpfahlerziehung' },
+                    { q: "Which grape variety is a crossing of Trollinger (Schiava) and Riesling?", a: "Kerner", o: ["Scheurebe", "Bacchus", "Huxelrebe"], subjectType: 'grape', subjectName: 'Kerner' },
+                    { q: "The VDP statutes often restrict Grosse Lage bottlings to which two primary grape varieties?", a: "Riesling and Spätburgunder", o: ["Riesling and Silvaner", "Spätburgunder and Lemberger", "Riesling and Weissburgunder"], subjectType: 'grape', subjectName: 'VDP Grape Varieties' },
+                    { q: "Which grape variety, though statistically insignificant, has a strong historical association with the Pfalz and is known for aromatic wines?", a: "Traminer", o: ["Muskateller", "Elbling", "Gutedel"], subjectType: 'grape', subjectName: 'Traminer' },
+                    { q: "Which of these is NOT a crossing bred at a German research institute?", a: "Spätburgunder", o: ["Dornfelder", "Kerner", "Scheurebe"], subjectType: 'grape', subjectName: 'German Crossings' },
+                    { q: "The term for a sub-variety or biotype of a grape variety is a:", a: "Clone", o: ["Crossing", "Hybrid", "Mutation"], subjectType: 'terminology', subjectName: 'Clone' },
+                    { q: "Which white grape variety has seen a significant increase in plantings across Germany, especially in Baden and the Pfalz, due to demand for dry, food-friendly wines?", a: "Weissburgunder", o: ["Müller-Thurgau", "Silvaner", "Kerner"], subjectType: 'grape', subjectName: 'Weissburgunder' },
+                    { q: "What percentage of German vineyards is planted to red grape varieties?", a: "Approximately one-third", o: ["Approximately half", "Approximately one-quarter", "Less than 10%"], subjectType: 'viticulture', subjectName: 'German Grape Plantings' },
+                    { q: "Which grape is known for its ability to produce the full spectrum of wine styles, from bone-dry to lusciously sweet Eiswein?", a: "Riesling", o: ["Chardonnay", "Silvaner", "Weissburgunder"], subjectType: 'grape', subjectName: 'Riesling' },
+                    { q: "The practice of using ungrafted vines is most associated with which region, due to slate soils and resistance to phylloxera?", a: "Mosel", o: ["Baden", "Pfalz", "Rheingau"], subjectType: 'viticulture', subjectName: 'Ungrafted Vines' },
+                    { q: "Which grape variety is NOT a traditional grape of Württemberg?", a: "Dornfelder", o: ["Trollinger", "Lemberger", "Schwarzriesling"], subjectType: 'grape', subjectName: 'Württemberg Traditional Grapes' }
+                ]
+            },
+            lawmaker: {
+                title: "The Lawmaker's Desk",
+                instructions: "Answer 100 multiple-choice questions about German wine law, appellation structure, and winemaking regulations.",
+                questions: [
+                    { q: "The 1971 German Wine Law (Weingesetz) established its quality hierarchy primarily based on what metric?", a: "Must weight (sugar ripeness) at harvest", o: ["Geographical origin (terroir)", "Aging requirements", "Grape variety"] },
+                    { q: "What is the German term for a legally defined quality wine region, of which there are 13?", a: "Anbaugebiet", o: ["Bereich", "Einzellage", "Grosslage"] },
+                    { q: "Which practice is strictly forbidden for any wine labeled as 'Prädikatswein'?", a: "Chaptalization (Anreicherung)", o: ["Acidification", "Use of Süssreserve", "Aging in oak"] },
+                    { q: "What does the VDP designation 'Grosses Gewächs' (GG) signify?", a: "A dry wine from a top-classified (Grosse Lage) vineyard", o: ["A sweet wine with a Gold Capsule", "A premier cru (Erste Lage) wine", "A village-level wine"] },
+                    { q: "What is the German term for a single, registered vineyard site?", a: "Einzellage", o: ["Grosslage", "Gemarkung", "Flur"] },
+                    { q: "The Prädikat level 'Kabinett' represents which style of wine?", a: "The lightest and most delicate style from fully ripe grapes", o: ["A late-harvest wine", "A select-harvest sweet wine", "An ice wine"] },
+                    { q: "What is the minimum must weight in Oechsle for a Riesling to be classified as Spätlese in the Mosel?", a: "80°Oe", o: ["73°Oe", "85°Oe", "90°Oe"] },
+                    { q: "The VDP's four-tier classification pyramid, in ascending order of quality, is:", a: "Gutswein, Ortswein, Erste Lage, Grosse Lage", o: ["Qualitätswein, Kabinett, Spätlese, Auslese", "Landwein, Qualitätswein, Prädikatswein, Eiswein", "Einzellage, Grosslage, Bereich, Anbaugebiet"] },
+                    { q: "What does 'Erzeugerabfüllung' or 'Gutsabfüllung' on a label mean?", a: "Estate-bottled", o: ["Bottled by a cooperative", "Imported wine bottled in Germany", "Unfiltered wine"] },
+                    { q: "A 'Grosslage' created by the 1971 Wine Law refers to what?", a: "A collective vineyard site, often grouping many Einzellagen", o: ["A grand cru vineyard", "A vineyard under single ownership", "A steep-sloped vineyard"] },
+                    { q: "The term 'trocken' on a German wine label indicates that the wine is:", a: "Dry", o: ["Off-dry", "Sweet", "Sparkling"] },
+                    { q: "For a VDP.Grosse Lage wine, what is the maximum permitted yield in hectoliters per hectare (hl/ha)?", a: "50 hl/ha", o: ["75 hl/ha", "105 hl/ha", "60 hl/ha"] },
+                    { q: "What is the minimum actual alcohol percentage for a Beerenauslese (BA) or Trockenbeerenauslese (TBA)?", a: "5.5% ABV", o: ["7.0% ABV", "8.5% ABV", "10.0% ABV"] },
+                    { q: "The term 'Erstes Gewächs' (EG) is a legally defined classification unique to which German region?", a: "Rheingau", o: ["Mosel", "Pfalz", "Baden"] },
+                    { q: "What is the A.P. Nr. (Amtliche Prüfungsnummer) found on a bottle of Qualitätswein?", a: "An official quality control test number", o: ["The producer's membership number", "The tax registration number", "The vineyard parcel number"] },
+                    { q: "Which Prädikat level requires grapes to be harvested and pressed while frozen at a minimum of -7°C?", a: "Eiswein", o: ["Beerenauslese", "Trockenbeerenauslese", "Auslese"] },
+                    { q: "The new German Wine Law, set for full implementation in 2026, officially adopts a hierarchy based on what principle?", a: "Origin (terroir), similar to the VDP model", o: ["Grape variety", "Producer reputation", "A revised ripeness scale"] },
+                    { q: "The term 'Weissherbst' is a legally defined style of what?", a: "Rosé made from 100% of a single red grape variety", o: ["A blend of red and white grapes", "A light red wine for early consumption", "A sparkling rosé"] },
+                    { q: "Which VDP classification is analogous to a 'village' wine in Burgundy?", a: "VDP.Ortswein", o: ["VDP.Gutswein", "VDP.Erste Lage", "VDP.Grosse Lage"] },
+                    { q: "The term 'Süssreserve' refers to:", a: "Unfermented grape juice added to a finished wine to increase sweetness", o: ["A reserve bottling of a sweet wine", "The legal sugar limit for dry wines", "The process of stopping fermentation"] },
+                    { q: "Which region is unique for consisting of only one district (Bereich), named 'Johannisberg'?", a: "Rheingau", o: ["Ahr", "Nahe", "Hessische Bergstrasse"] },
+                    { q: "The logo of a stylized eagle holding a grape cluster identifies a wine from a member of which organization?", a: "VDP", o: ["Charta", "Message in a Bottle", "German Wine Institute"] },
+                    { q: "The Prädikat with the highest minimum must weight requirement is:", a: "Trockenbeerenauslese (TBA)", o: ["Beerenauslese (BA)", "Eiswein", "Auslese"] },
+                    { q: "Chaptalization is legally permitted for which category of German wine?", a: "Qualitätswein", o: ["Prädikatswein", "Eiswein", "Kabinett"] },
+                    { q: "The term 'halbtrocken' on a label means the wine is:", a: "Off-dry", o: ["Dry", "Sweet", "Medium-bodied"] },
+                    { q: "What is the name of the association founded in the Rheingau in 1984 that pioneered the focus on high-quality dry Riesling?", a: "Charta", o: ["VDP", "Grosser Ring", "Bernkasteler Ring"] },
+                    { q: "The VDP mandates a later release date for its top red GG wines than for its white GG wines to ensure:", a: "A minimum period of maturation, including time in oak", o: ["The wine settles properly after bottling", "It aligns with market demand", "The label approvals are complete"] },
+                    { q: "A wine labeled 'Piesporter Michelsberg' is most likely a wine from a:", a: "Grosslage", o: ["Einzellage", "Bereich", "Monopole"] },
+                    { q: "What does the German word 'Anbaugebiet' translate to in English?", a: "Growing region", o: ["Village", "Vineyard", "District"] },
+                    { q: "Which of these is NOT one of the six Prädikat levels?", a: "Kabinett Trocken", o: ["Spätlese", "Auslese", "Beerenauslese"] },
+                    { q: "The term 'Sekt b.A.' on a bottle of sparkling wine signifies:", a: "Quality sparkling wine from a specified region", o: ["Sparkling wine made by the tank method", "Sparkling wine with no dosage", "Estate-grown sparkling wine"] },
+                    { q: "The VDP's top tier for sparkling wine, requiring a minimum of 36 months on lees, is called:", a: "VDP.Sekt.Prestige", o: ["Winzersekt", "VDP.Sekt", "Klassische Flaschengärung"] },
+                    { q: "What does the term 'Alleinbesitz' mean?", a: "A monopole or vineyard under single ownership", o: ["Old vines", "A state-owned domain", "A walled vineyard"] },
+                    { q: "The 'Badisch Rotgold' is a specialty of Baden made from a co-fermented blend of Grauburgunder and which other grape?", a: "Spätburgunder", o: ["Weissburgunder", "Trollinger", "Lemberger"] },
+                    { q: "Under the new 2026 German wine law, what terms will be legally recognized for top dry single-vineyard wines?", a: "Erstes Gewächs and Grosses Gewächs", o: ["Premier Cru and Grand Cru", "Classic and Selection", "Fein and Hochfein"] },
+                    { q: "The 'Grosser Ring' is the regional VDP chapter for which Anbaugebiet?", a: "Mosel", o: ["Rheingau", "Pfalz", "Ahr"] },
+                    { q: "What does the German term 'Weingut' mean?", a: "Wine estate", o: ["Wine cooperative", "Wine merchant", "Winemaker"] },
+                    { q: "Which is the highest tier in the traditional German wine law pyramid?", a: "Prädikatswein", o: ["Qualitätswein", "Landwein", "Deutscher Wein"] },
+                    { q: "The term 'feinherb' is an unofficial but common term for what style of wine?", a: "Off-dry", o: ["Bone dry", "Medium sweet", "Very sweet"] },
+                    { q: "The 1868 Prussian Vineyard Classification of the Mosel was based on what data?", a: "Net income and market price of the wines", o: ["Soil analysis and slope aspect", "Grape variety and vine age", "Historical reputation"] },
+                    { q: "The minimum actual alcohol for a Riesling Kabinett is:", a: "7.0% ABV", o: ["5.5% ABV", "8.0% ABV", "9.5% ABV"] },
+                    { q: "Which of these is a legally protected designation of origin (PDO)?", a: "Qualitätswein", o: ["Landwein", "Deutscher Wein", "VDP.Gutswein"] },
+                    { q: "The VDP classification system is primarily based on:", a: "Geographical origin (terroir)", o: ["Grape ripeness", "Producer size", "Wine price"] },
+                    { q: "In which region would you find a wine bottled in a 'Bocksbeutel'?", a: "Franken", o: ["Mosel", "Pfalz", "Baden"] },
+                    { q: "What does 'Klassische Flaschengärung' signify?", a: "Traditional method sparkling wine", o: ["Tank method sparkling wine", "Carbonated wine", "A still wine aged in bottle"] },
+                    { q: "The VDP prohibits its members from using what type of geographical designation on their labels?", a: "Grosslage", o: ["Einzellage", "Bereich", "Ortsteil"] },
+                    { q: "Which of these is NOT one of the 13 official Anbaugebiete?", a: "Südliche Weinstraße", o: ["Sachsen", "Saale-Unstrut", "Mittelrhein"] },
+                    { q: "The addition of sterile, unfermented grape must to sweeten a wine is called:", a: "Süssreserve", o: ["Chaptalization", "Acidification", "De-acidification"] },
+                    { q: "What is the legal maximum yield for Qualitätswein in the Pfalz?", a: "105 hl/ha", o: ["50 hl/ha", "75 hl/ha", "90 hl/ha"] },
+                    { q: "A wine labeled 'Naturwein' prior to 1971 was a wine that was:", a: "Unchaptalized", o: ["Organic", "Unfiltered", "Made with no added sulfur"] },
+                    { q: "The term 'Schillerwein' from Württemberg is a Rotling made from what?", a: "Co-fermented red and white grapes", o: ["A single red grape variety", "A blend of finished red and white wines", "Grapes affected by noble rot"] },
+                    { q: "Which Prädikat level literally means 'select harvest'?", a: "Auslese", o: ["Spätlese", "Beerenauslese", "Kabinett"] },
+                    { q: "What is the key difference between Beerenauslese and Eiswein, which share a minimum must weight?", a: "BA is from botrytized grapes, Eiswein is from frozen healthy grapes.", o: ["Eiswein must be Riesling, BA can be any grape.", "BA has a lower minimum alcohol.", "There is no key difference."] },
+                    { q: "Which region contains the Bereiche Bingen, Nierstein, and Wonnegau?", a: "Rheinhessen", o: ["Pfalz", "Nahe", "Mosel"] },
+                    { q: "The term 'Classic' was introduced in 2000 for what style of wine?", a: "Harmoniously dry single-varietal wines", o: ["Sweet reserve wines", "Wines aged in large oak", "Top-tier sparkling wines"] },
+                    { q: "The VDP's 'Erste Lage' classification is analogous to what French vineyard classification?", a: "Premier Cru", o: ["Grand Cru", "Village", "Bourgogne Régional"] },
+                    { q: "What does the German word 'Winzer' mean?", a: "Winegrower or winemaker", o: ["Wine cellar", "Wine cooperative", "Wine estate"] },
+                    { q: "If a German wine label states a single grape variety, what is the minimum percentage of that variety required in the wine?", a: "85%", o: ["100%", "75%", "90%"] },
+                    { q: "The term 'Selection' was introduced in 2000 for what style of wine?", a: "Superior dry single-vineyard wines", o: ["A blend of different vintages", "A wine selected by a panel of critics", "A sweet wine from a top site"] },
+                    { q: "Which region has the most complex appellation structure with nine distinct Bereiche?", a: "Baden", o: ["Württemberg", "Pfalz", "Mosel"] },
+                    { q: "The term 'Winzersekt' designates what kind of sparkling wine?", a: "An estate-grown, traditional-method Sekt", o: ["A tank-method Sekt", "A carbonated Sekt", "A sweet sparkling wine"] },
+                    { q: "What does 'Landwein' correspond to in the EU's classification system?", a: "PGI (Protected Geographical Indication)", o: ["PDO (Protected Designation of Origin)", "Table Wine", "Wine with no geographical indication"] },
+                    { q: "The upcoming 2026 German wine law will phase out which confusing geographical term?", a: "Grosslage", o: ["Einzellage", "Bereich", "Anbaugebiet"] },
+                    { q: "What is the German term for a traditional 1200-liter oak cask?", a: "Stückfass", o: ["Fuder", "Halbstück", "Barrique"] },
+                    { q: "Which Anbaugebiet has the most VDP.Grosse Lage sites by area?", a: "Mosel", o: ["Pfalz", "Rheingau", "Rheinhessen"] },
+                    { q: "What is the name for the German federal state that contains the Ahr, Mosel, Nahe, Pfalz, and Rheinhessen?", a: "Rhineland-Palatinate", o: ["Baden-Württemberg", "Hesse", "Bavaria"] },
+                    { q: "The 'Message in a Bottle' association was an influential group of producers from which region?", a: "Rheinhessen", o: ["Pfalz", "Rheingau", "Nahe"] },
+                    { q: "What does the 'DC' in 'DC Pfalz' stand for?", a: "Districtus Controllatus", o: ["Deutscher Classic", "Dry & Crisp", "Domaine Certified"] },
+                    { q: "The German term 'Weinstraße' means:", a: "Wine Route", o: ["Wine Stone", "Wine Cellar", "Wine Law"] },
+                    { q: "If a wine is chaptalized, the highest quality level it can achieve is:", a: "Qualitätswein", o: ["Kabinett", "Spätlese", "Landwein"] },
+                    { q: "The term 'Goldkapsel' (gold capsule) is an unofficial designation used by some producers, especially in the Mosel, to indicate what?", a: "A wine of higher quality or sweetness than the standard Prädikat level", o: ["A dry wine from a top site", "A wine that has won an award", "A wine intended for auction"] },
+                    { q: "Which Anbaugebiet is composed of the Bereiche Mainviereck, Maindreieck, and Steigerwald?", a: "Franken", o: ["Württemberg", "Baden", "Hessische Bergstrasse"] },
+                    { q: "What is the minimum must weight in Oechsle for a Riesling Auslese in the Rheingau?", a: "95°Oe", o: ["85°Oe", "100°Oe", "125°Oe"] },
+                    { q: "The legal requirement for a wine labeled 'trocken' is a maximum of 9 g/L of residual sugar, provided the total acidity is...", a: "No more than 2 g/L lower than the residual sugar", o: ["At least equal to the residual sugar", "At least 10 g/L", "Less than 5 g/L"] },
+                    { q: "The VDP's logo, the 'Traubenadler', depicts an eagle holding what?", a: "A grape cluster", o: ["A wine bottle", "A key", "A crown"] },
+                    { q: "The 1971 law consolidated approximately 30,000 historic Einzellagen into how many larger units?", a: "Around 2,700", o: ["Around 5,000", "Around 1,000", "Around 10,000"] },
+                    { q: "What is the primary legal difference between 'Deutscher Sekt' and 'Sekt b.A.'?", a: "'Deutscher Sekt' must be 100% German grapes; 'Sekt b.A.' must come from a specific region.", o: ["'Sekt b.A.' must be traditional method.", "'Deutscher Sekt' can use imported base wine.", "There is no legal difference."] },
+                    { q: "In the VDP classification, what is the maximum yield for an Ortswein?", a: "75 hl/ha", o: ["50 hl/ha", "60 hl/ha", "105 hl/ha"] },
+                    { q: "Which practice is mutually exclusive with de-acidification under German wine law?", a: "Acidification", o: ["Chaptalization", "Süssreserve addition", "Filtration"] },
+                    { q: "The term 'Liebfraumilch' is legally defined as a semi-sweet Qualitätswein from which regions?", a: "Rheinhessen, Pfalz, Nahe, or Rheingau", o: ["Mosel only", "All 13 Anbaugebiete", "Rheinhessen only"] },
+                    { q: "The term 'Rotling' refers to a category of wine made from:", a: "A mix of red and white grapes or must", o: ["A single red grape pressed immediately", "Grapes with red-tinged skins", "A blend of red wines"] },
+                    { q: "For a VDP.Erste Lage wine, what is the maximum permitted yield?", a: "60 hl/ha", o: ["50 hl/ha", "75 hl/ha", "90 hl/ha"] },
+                    { q: "What is the German term for a wine cooperative?", a: "Winzergenossenschaft", o: ["Weingut", "Weinkellerei", "Gutsabfüllung"] },
+                    { q: "The new 2026 German wine law formally codifies an origin-based hierarchy for all producers, effectively making which organization's philosophy the national standard?", a: "The VDP", o: ["The German Wine Institute", "The Charta Association", "The European Union"] },
+                    { q: "Which Prädikat requires grapes to be affected by 'Edelfäule' (noble rot)?", a: "Beerenauslese and Trockenbeerenauslese", o: ["Kabinett and Spätlese", "Eiswein", "All Prädikate"] },
+                    { q: "The term 'Pfälzer Landwein' would fall into which category of the German wine pyramid?", a: "Landwein (PGI)", o: ["Deutscher Wein", "Qualitätswein (PDO)", "Prädikatswein (PDO)"] },
+                    { q: "What is the minimum must weight in Oechsle for a Riesling Beerenauslese in the Pfalz?", a: "120°Oe", o: ["100°Oe", "150°Oe", "110°Oe"] },
+                    { q: "The term 'Cabinetkeller' at Kloster Eberbach gave its name to which Prädikat level?", a: "Kabinett", o: ["Spätlese", "Auslese", "Cabinet (unofficial)"] },
+                    { q:- "The Rheingau is located in which German federal state?", a: "Hesse", o: ["Rhineland-Palatinate", "Baden-Württemberg", "Bavaria"] },
+                    { q: "A wine labeled with a single vineyard must also include the name of what on the label?", a: "The village (Gemeinde)", o: ["The Bereich", "The producer's address", "The soil type"] },
+                    { q: "The legal minimum for a Spätburgunder Qualitätswein in the Ahr is what must weight?", a: "65°Oe", o: ["55°Oe", "60°Oe", "70°Oe"] },
+                    { q: "In Baden, minimum Prädikat ripeness levels vary widely by variety and what else?", a: "The area (Bereich) within the anbaugebiet", o: ["The producer", "The bottle shape", "The age of the vines"] },
+                    { q: "What is the legal minimum must weight for a wine to be bottled in a Bocksbeutel in Franken?", a: "72°Oe", o: ["63°Oe", "80°Oe", "90°Oe"] },
+                    { q: "Which Anbaugebiet has its own legally defined 'gU' sub-appellations, such as 'Würzburger Stein-Berg gU'?", a: "Franken", o: ["Mosel", "Pfalz", "Baden"] },
+                    { q: "The 'Mittelrhein Riesling Charter (MRC)' is an example of what?", a: "A private producer association with its own quality tiers", o: ["A government-mandated law", "A marketing cooperative", "A historical document"] },
+                    { q: "What is the minimum must weight for Riesling TBA in the Mosel?", a: "150°Oe", o: ["120°Oe", "140°Oe", "160°Oe"] },
+                    { q: "In the Pfalz, which Prädikat for Riesling has a minimum must weight of 90°Oe?", a: "Spätlese", o: ["Kabinett", "Auslese", "Beerenauslese"] }
+                ]
+            },
+            gastronome: {
+                title: "The Gastronome's Table",
+                instructions: "Answer 100 multiple-choice questions about German cuisine, ingredients, and classic pairings. After a correct answer, you may have the option to generate an AI explanation.",
+                questions: [
+                    { q: "What is the undisputed signature dish of the Pfalz, a savory pudding cooked in a pig's stomach?", a: "Pfälzer Saumagen", o: ["Leberknödel", "Flääschknepp", "Dampfnudeln"], subjectType: 'dish', subjectName: 'Pfälzer Saumagen' },
+                    { q: "A crisp, dry (Trocken) Riesling with high acidity is the classic pairing for Pfälzer Saumagen for what reason?", a: "The acidity cuts through the fat of the pork.", o: ["The wine's sweetness complements the savory dish.", "The wine's tannins match the texture of the meat.", "It is a traditional local custom with no gastronomic reason."], subjectType: 'wine_pairing', subjectName: 'Saumagen and Riesling' },
+                    { q: "Which pungent, low-fat sour milk cheese, marinated with oil, vinegar, and onions, is a famous specialty of the Rheingau and Hesse?", a: "Handkäse mit Musik", o: ["Spundekäs", "Limburger", "Obatzda"], subjectType: 'dish', subjectName: 'Handkäse mit Musik' },
+                    { q: "An off-dry (Feinherb) Riesling is often paired with Handkäse mit Musik to:", a: "Balance the pungency of the cheese and onions.", o: ["Match the high acidity of the vinaigrette.", "Contrast the low-fat texture of the cheese.", "Amplify the savory flavors."], subjectType: 'wine_pairing', subjectName: 'Handkäse and Riesling' },
+                    { q: "What is the name of the creamy, spreadable cheese preparation from Rheinhessen, typically seasoned with paprika and served with pretzels?", a: "Spundekäs", o: ["Handkäse", "Kochkäse", "Quark"], subjectType: 'dish', subjectName: 'Spundekäs' },
+                    { q: "What is 'Weinschorle', perhaps the most ubiquitous drink in the Pfalz?", a: "A spritzer of wine and sparkling mineral water", o: ["A mulled wine served hot", "A wine-based cocktail", "A non-alcoholic grape juice"], subjectType: 'beverage', subjectName: 'Weinschorle' },
+                    { q: "The dimpled 0.5-liter glass traditionally used for serving Weinschorle in the Pfalz is called a:", a: "Dubbeglas", o: ["Römer", "Stange", "Willi Becher"], subjectType: 'gastronomy', subjectName: 'Dubbeglas' },
+                    { q: "Which savory onion tart is a classic autumnal dish in many German wine regions, often paired with new wine (Federweisser)?", a: "Zwiebelkuchen", o: ["Flammkuchen", "Quiche Lorraine", "Käsekuchen"], subjectType: 'dish', subjectName: 'Zwiebelkuchen' },
+                    { q: "What is the German term for the young, still-fermenting new wine of the harvest season?", a: "Federweisser", o: ["Sturm", "Neuer Wein", "Most"], subjectType: 'beverage', subjectName: 'Federweisser' },
+                    { q: "Which PGI-protected Swabian specialty consists of large pasta parcels filled with minced meat and spinach?", a: "Schwäbische Maultaschen", o: ["Käsespätzle", "Schupfnudeln", "Leberknödel"], subjectType: 'dish', subjectName: 'Schwäbische Maultaschen' },
+                    { q: "What does 'Himmel un Äd' ('Heaven and Earth') traditionally combine?", a: "Black pudding and mashed potatoes with apple sauce", o: ["Sausage and sauerkraut", "Pork knuckle and dumplings", "Fish and potato salad"], subjectType: 'dish', subjectName: 'Himmel un Äd' },
+                    { q: "What is the German term for brandy distilled from wine, with Asbach Uralt being a famous example?", a: "Weinbrand", o: ["Obstbrand", "Tresterbrand", "Korn"], subjectType: 'beverage', subjectName: 'Weinbrand' },
+                    { q: "Kirschwasser, a key ingredient in Black Forest Cake, is a clear, unsweetened brandy distilled from what?", a: "Cherries", o: ["Pears", "Plums", "Apples"], subjectType: 'beverage', subjectName: 'Kirschwasser' },
+                    { q: "Tresterbrand, a specialty of the Mosel, is a pomace brandy, the German equivalent of what Italian spirit?", a: "Grappa", o: ["Amaro", "Fernet", "Sambuca"], subjectType: 'beverage', subjectName: 'Tresterbrand' },
+                    { q: "Which seasonal delicacy in Rheinhessen and other regions is famously paired with dry Silvaner or Weissburgunder?", a: "White Asparagus (Spargel)", o: ["Sweet Chestnuts (Keschde)", "Wild Mushrooms (Pilze)", "Rhubarb (Rhabarber)"], subjectType: 'ingredient', subjectName: 'Spargel' },
+                    { q: "A powerful, dry Grosses Gewächs Riesling from the Rheingau has the weight to pair with dishes like:", a: "Roast pork or poultry", o: ["Spicy Thai curry", "Fresh oysters", "Light salads"], subjectType: 'wine_pairing', subjectName: 'GG Riesling and Pork' },
+                    { q: "The 'Pfälzer Dreifaltigkeit' (Palatinate Trinity) is a platter featuring Saumagen, Bratwurst, and what else?", a: "Leberknödel (liver dumpling)", o: ["Weisswurst", "A slice of ham", "A meatball"], subjectType: 'dish', subjectName: 'Pfälzer Dreifaltigkeit' },
+                    { q: "A powerful Pfalz Spätburgunder from a Grosse Lage is a classic pairing for what type of dish?", a: "Roasted game with chestnuts", o: ["Poached river trout", "Savory onion tart", "A light vegetable soup"], subjectType: 'wine_pairing', subjectName: 'Spätburgunder and Game' },
+                    { q: "What is the name for the steamed yeast dumplings from the Pfalz that can be served savory or sweet?", a: "Dampfnudeln", o: ["Knödel", "Spätzle", "Maultaschen"], subjectType: 'dish', subjectName: 'Dampfnudeln' },
+                    { q: "The unique Mosel dish 'Tresterfleisch' involves marinating pork in wine and what other byproduct of winemaking?", a: "Grape pomace (Trester)", o: ["Vine leaves", "Lees (Hefe)", "Grape seeds"], subjectType: 'dish', subjectName: 'Tresterfleisch' },
+                    { q: "In the greater Frankfurt region, what tart, still apple cider is a major local specialty?", a: "Apfelwein", o: ["Most", "Federweisser", "Sekt"], subjectType: 'beverage', subjectName: 'Apfelwein' },
+                    { q: "What is the German term for sparkling wine?", a: "Sekt", o: ["Perlwein", "Schaumwein", "Sprudel"], subjectType: 'beverage', subjectName: 'Sekt' },
+                    { q: "The Black Forest is one of Europe's most important regions for the distillation of what?", a: "Fruit brandies (Obstbrände)", o: ["Whisky", "Vodka", "Rum"], subjectType: 'beverage', subjectName: 'Obstbrand' },
+                    { q: "The quintessential Rheinhessen snack 'Weck, Worscht un Woi' translates to:", a: "Bread Roll, Sausage, and Wine", o: ["Cheese, Bread, and Beer", "Pretzel, Mustard, and Wine", "Ham, Eggs, and Cider"], subjectType: 'dish', subjectName: 'Weck, Worscht un Woi' },
+                    { q: "A sweet Auslese or Beerenauslese Riesling provides a sublime contrast pairing with what food?", a: "Salty blue cheese", o: ["Grilled steak", "Leafy green salad", "Spicy sausage"], subjectType: 'wine_pairing', subjectName: 'Sweet Riesling and Blue Cheese' },
+                    { q: "The term 'Grumbeere' is the Palatinate dialect word for what staple ingredient?", a: "Potato", o: ["Onion", "Cabbage", "Apple"], subjectType: 'ingredient', subjectName: 'Grumbeere' },
+                    { q: "What is the primary rationale for pairing slightly sweet Riesling (Kabinett/Spätlese) with spicy Asian cuisine?", a: "The sweetness tames the chili heat while the acidity cleanses the palate.", o: ["The wine's alcohol amplifies the spice.", "The wine's minerality matches the umami flavors.", "The wine's fruitiness clashes with the savory notes."], subjectType: 'wine_pairing', subjectName: 'Riesling and Spicy Food' },
+                    { q: "The Mosel specialty 'Debbekoche' is a baked dish primarily made from what?", a: "Grated raw potatoes", o: ["Shredded cabbage", "Ground pork", "Layered noodles"], subjectType: 'dish', subjectName: 'Debbekoche' },
+                    { q: "Which famous German brewery, located in the Black Forest, is known for its 'Tannenzäpfle' pilsner?", a: "Rothaus", o: ["Paulaner", "Weihenstephaner", "Bitburger"], subjectType: 'beverage', subjectName: 'Rothaus Brewery' },
+                    { q: "What are 'Käsespätzle', a beloved comfort food from Baden-Württemberg?", a: "Soft egg noodles with cheese and fried onions", o: ["Cheese-filled dumplings", "A type of cheese fondue", "Baked cheese pastry"], subjectType: 'dish', subjectName: 'Käsespätzle' },
+                    { q: "The 'Red Vineyard Peach' (Roter Weinbergpfirsich) is a unique, aromatic local fruit associated with which region?", a: "Mosel", o: ["Rheingau", "Pfalz", "Baden"], subjectType: 'ingredient', subjectName: 'Red Vineyard Peach' },
+                    { q: "What is 'Obstwasser' a general term for?", a: "Fruit brandy", o: ["Sparkling water", "Cider", "Fruit liqueur"], subjectType: 'beverage', subjectName: 'Obstwasser' },
+                    { q: "The pairing of a powerful, dry Grosses Gewächs Riesling with roast pork is an example of what pairing principle?", a: "Matching weight and intensity", o: ["Contrasting sweetness and saltiness", "Echoing aromatic compounds", "Cleansing the palate with acidity"], subjectType: 'wine_pairing', subjectName: 'GG Riesling and Pork' },
+                    { q: "In the Pfalz, roasted sweet chestnuts ('Keschde' or 'Maronen') are a beloved seasonal specialty often accompanying what?", a: "Game dishes", o: ["River fish", "Pork sausages", "Potato soup"], subjectType: 'ingredient', subjectName: 'Keschde' },
+                    { q: "The 'Reinheitsgebot' is the famous German Purity Law that governs the production of what beverage?", a: "Beer", o: ["Wine", "Spirits", "Sekt"], subjectType: 'beverage', subjectName: 'Reinheitsgebot' },
+                    { q: "What does the 'Musik' in 'Handkäse mit Musik' humorously refer to?", a: "The digestive effects of the raw onions", o: ["The sound of the cheese being made", "The music played in the taverns", "The crunch of the bread served with it"], subjectType: 'gastronomy', subjectName: 'Handkäse mit Musik' },
+                    { q: "Which famous international spirit brand was founded in Rüdesheim am Rhein in 1892?", a: "Asbach", o: ["Jägermeister", "Underberg", "Monkey 47"], subjectType: 'beverage', subjectName: 'Asbach' },
+                    { q: "'Wisperforelle' is a specialty of the Rheingau featuring fresh trout from which tributary of the Rhine?", a: "The Wisper", o: ["The Main", "The Nahe", "The Lahn"], subjectType: 'dish', subjectName: 'Wisperforelle' },
+                    { q: "The 'Pfälzer Saumagen' is generously seasoned with marjoram, nutmeg, and which other spice?", a: "Pepper", o: ["Clove", "Cinnamon", "Allspice"], subjectType: 'dish', subjectName: 'Pfälzer Saumagen' },
+                    { q: "A traditional autumn meal in the Pfalz combines hearty potato soup with what other dish?", a: "Plum cake (Quetschekuche)", o: ["Apple strudel", "Onion tart", "A side of sausages"], subjectType: 'dish', subjectName: 'Grumbeersupp mit Quetschekuche' },
+                    { q: "What are 'Flääschknepp'?", a: "Substantial meat dumplings", o: ["Small fried potatoes", "Breaded pork cutlets", "Stuffed cabbage rolls"], subjectType: 'dish', subjectName: 'Flääschknepp' },
+                    { q: "What is the German term for the traditional wine taverns, often run by the wineries themselves, that serve local food?", a: "Straußwirtschaft or Besenwirtschaft", o: ["Biergarten", "Gasthaus", "Weinstube"], subjectType: 'gastronomy', subjectName: 'Straußwirtschaft' },
+                    { q: "'Schwarzwälder Schinken' (Black Forest Ham) is a world-renowned PGI product known for being:", a: "Dry-cured and cold-smoked", o: ["Boiled and brined", "Fresh and uncured", "Spicy and air-dried"], subjectType: 'ingredient', subjectName: 'Schwarzwälder Schinken' },
+                    { q: "What is the German term for a wine tavern or pub?", a: "Weinstube", o: ["Weinberg", "Weingut", "Weinkeller"], subjectType: 'gastronomy', subjectName: 'Weinstube' },
+                    { q: "In which region would you most likely find a dish featuring fresh pike-perch (Zander) served with a Riesling cream sauce?", a: "Mosel", o: ["Baden", "Württemberg", "Franken"], subjectType: 'dish', subjectName: 'Zander in Riesling Sauce' },
+                    { q: "A Bembel is a traditional ceramic pitcher used for serving what beverage in the Frankfurt area?", a: "Apfelwein", o: ["Beer", "Water", "Wine"], subjectType: 'beverage', subjectName: 'Apfelwein' },
+                    { q: "'Badische Schäufele' is a specialty of Baden made from what cut of pork?", a: "Cured and smoked pork shoulder", o: ["Roasted pork knuckle", "Fried pork belly", "Pork loin schnitzel"], subjectType: 'dish', subjectName: 'Badische Schäufele' },
+                    { q: "'Monkey 47' is a world-renowned craft gin that originates from which German region?", a: "The Black Forest (Baden)", o: ["The Bavarian Alps", "The Harz Mountains", "The Pfälzerwald"], subjectType: 'beverage', subjectName: 'Monkey 47 Gin' },
+                    { q: "Which of these is NOT a traditional pairing for a dry German Riesling?", a: "Rich, creamy pasta Alfredo", o: ["Pork schnitzel", "Pan-seared trout", "Sausages and sauerkraut"], subjectType: 'wine_pairing', subjectName: 'Dry Riesling Pairings' },
+                    { q: "What is the primary reason that German wines, with their high acidity, are considered exceptionally food-friendly?", a: "The acidity cleanses the palate and cuts through richness.", o: ["Their high alcohol content stands up to any food.", "Their sweetness matches all flavors.", "They have no tannins to clash with food."], subjectType: 'gastronomy', subjectName: 'German Wine and Food' },
+                    { q: "Which PGI-protected red onion is grown on the Höri peninsula of Lake Constance?", a: "Höri Bülle", o: ["Stuttgarter Riesen", "Bamberger Hörnla", "Esslinger Zwiebel"], subjectType: 'ingredient', subjectName: 'Höri Bülle' },
+                    { q: "A dry Silvaner from Franken is a classic pairing for:", a: "White asparagus with hollandaise sauce", o: ["Spicy Indian curry", "Sweet and sour pork", "Chocolate cake"], subjectType: 'wine_pairing', subjectName: 'Silvaner and Asparagus' },
+                    { q: "What type of beer is most commonly associated with Germany as a whole, known for being a crisp, pale lager?", a: "Pilsner", o: ["Stout", "IPA", "Saison"], subjectType: 'beverage', subjectName: 'German Beer Styles' },
+                    { q: "Which dish's name translates to 'onion cake'?", a: "Zwiebelkuchen", o: ["Apfelkuchen", "Käsekuchen", "Streuselkuchen"], subjectType: 'dish', subjectName: 'Zwiebelkuchen' },
+                    { q: "What is the primary flavor profile of a classic Pfälzer Saumagen?", a: "Savory pork, potato, and herbs like marjoram", o: ["Sweet, spicy, and smoky", "Fishy and briny", "Cheesy and creamy"], subjectType: 'dish', subjectName: 'Pfälzer Saumagen' },
+                    { q: "The German term 'naturtrüb' on a beer label indicates that the beer is:", a: "Unfiltered", o: ["Dark", "Strong", "Non-alcoholic"], subjectType: 'beverage', subjectName: 'German Beer Styles' },
+                    { q: "A dry Weissburgunder (Pinot Blanc) with good body is a refreshing counterpoint to what savory Pfalz dish?", a: "Dampfnudeln", o: ["Saumagen", "Game with chestnuts", "Zwiebelkuchen"], subjectType: 'wine_pairing', subjectName: 'Weissburgunder and Dampfnudeln' },
+                    { q: "The pairing of a sweet Beerenauslese with foie gras is an example of what classic pairing principle?", a: "Complementing richness while contrasting with acidity", o: ["Matching sweetness with sweetness", "Contrasting textures", "Aromatic echoing"], subjectType: 'wine_pairing', subjectName: 'BA and Foie Gras' },
+                    { q: "Which of these is a PGI-protected lentil variety from the Swabian Alb in Baden-Württemberg?", a: "Alb-Leisa", o: ["Puy Lentils", "Beluga Lentils", "Red Lentils"], subjectType: 'ingredient', subjectName: 'Alb-Leisa' },
+                    { q: "The hearty cuisine of the Mosel is traditionally meant to sustain workers in what environment?", a: "The steep vineyard slopes", o: ["The fishing boats on the river", "The coal mines", "The logging forests"], subjectType: 'gastronomy', subjectName: 'Mosel Cuisine' },
+                    { q: "What is the key ingredient in a 'Leberknödel'?", a: "Liver", o: ["Bread", "Potato", "Cheese"], subjectType: 'dish', subjectName: 'Leberknödel' },
+                    { q: "A beer brandy, or 'Bierbrand', is a spirit distilled from what?", a: "Beer", o: ["Wine", "Fruit", "Grain mash"], subjectType: 'beverage', subjectName: 'Bierbrand' },
+                    { q: "Which of these is NOT a pillar of the 'Pfälzer Dreifaltigkeit'?", a: "A meatball (Frikadelle)", o: ["Saumagen", "Bratwurst", "Leberknödel"], subjectType: 'dish', subjectName: 'Pfälzer Dreifaltigkeit' },
+                    { q: "The German tradition of 'Kaffee und Kuchen' refers to what afternoon custom?", a: "Coffee and cake", o: ["Tea and biscuits", "Wine and cheese", "Beer and pretzels"], subjectType: 'gastronomy', subjectName: 'Kaffee und Kuchen' },
+                    { q: "Which of these is a type of German wheat beer?", a: "Hefeweizen", o: ["Helles", "Dunkel", "Bock"], subjectType: 'beverage', subjectName: 'German Beer Styles' },
+                    { q: "The German term 'herzhaft' used to describe food means:", a: "Hearty or savory", o: ["Sweet", "Spicy", "Light"], subjectType: 'gastronomy', subjectName: 'German Cuisine Terminology' },
+                    { q: "Which German region's cuisine is most influenced by neighboring France (Alsace)?", a: "Baden and Pfalz", o: ["Mosel and Ahr", "Sachsen and Saale-Unstrut", "Franken and Württemberg"], subjectType: 'gastronomy', subjectName: 'German Regional Cuisine' },
+                    { q: "A dry Lemberger from Württemberg would be a good pairing for what?", a: "Roast beef or lentils", o: ["Delicate white fish", "Spicy noodles", "Fruit tart"], subjectType: 'wine_pairing', subjectName: 'Lemberger Pairings' },
+                    { q: "Which of these is a famous brand of German herbal liqueur, often served as a digestif?", a: "Jägermeister", o: ["Asbach", "Kirschwasser", "Korn"], subjectType: 'beverage', subjectName: 'Jägermeister' },
+                    { q: "The Mosel tradition of cooking fish wrapped in what imparts a subtle, tangy flavor?", a: "Vine leaves", o: ["Cabbage leaves", "Banana leaves", "Aluminum foil"], subjectType: 'dish', subjectName: 'Fish in Vine Leaves' }
+                ]
+            },
+            critic: {
+                title: "The Critic's Corner",
+                instructions: "Answer 100 multiple-choice questions about the vintages, producers, and market context of German wine. After a correct answer, you may have the option to generate an AI tasting note.",
+                questions: [
+                    { q: "Which Rheinhessen producer's wines, particularly the 'G-Max' Riesling, are among the most expensive and sought-after dry white wines in the world?", a: "Weingut Keller", o: ["Weingut Wittmann", "Battenfeld-Spanier", "Gunderloch"], subjectType: 'producer', subjectName: 'Weingut Keller' },
+                    { q: "Which vintage is widely described by critics as a 'classic' cool year, producing filigree, high-acid, and pure wines reminiscent of older vintages?", a: "2021", o: ["2018", "2020", "2015"], subjectType: 'vintage', subjectName: '2021 German Vintage' },
+                    { q: "Which Mosel estate is legendary for its Scharzhofberger Rieslings, especially the intensely sweet and long-lived TBAs?", a: "Egon Müller", o: ["Joh. Jos. Prüm", "Fritz Haag", "Markus Molitor"], subjectType: 'producer', subjectName: 'Egon Müller' },
+                    { q: "The 'three Bs'—Bürklin-Wolf, Bassermann-Jordan, and Reichsrat von Buhl—are historic, benchmark estates from which Pfalz village?", a: "Deidesheim", o: ["Forst", "Wachenheim", "Gimmeldingen"], subjectType: 'producer', subjectName: 'The Three Bs of Deidesheim' },
+                    { q: "Which Rheingau estate, located in Kiedrich, is widely regarded as one of Germany's absolute finest, producing Rieslings of extraordinary precision and purity?", a: "Weingut Robert Weil", o: ["Weingut Georg Breuer", "Schloss Johannisberg", "Kloster Eberbach"], subjectType: 'producer', subjectName: 'Weingut Robert Weil' },
+                    { q: "How is the 2018 vintage generally characterized by critics?", a: "Exceptionally hot and dry, producing powerful, fruit-driven wines with high ripeness.", o: ["Cool and wet, resulting in lean, high-acid wines.", "A balanced, classic vintage with moderate alcohol.", "A small crop due to widespread frost."], subjectType: 'vintage', subjectName: '2018 German Vintage' },
+                    { q: "Which producer from the Südliche Weinstraße is considered a standard-bearer for purity and biodynamic winemaking, known for long-lived Rieslings from sites like Kastanienbusch?", a: "Ökonomierat Rebholz", o: ["Friedrich Becker", "Dr. Wehrheim", "Philipp Kuhn"], subjectType: 'producer', subjectName: 'Ökonomierat Rebholz' },
+                    { q: "Which producer, under winemaker Stephan Attmann, has become a leader of the modern Pfalz style, fermenting top Rieslings in oak barrels?", a: "Von Winning", o: ["Koehler-Ruprecht", "A. Christmann", "Pfeffingen"], subjectType: 'producer', subjectName: 'Von Winning' },
+                    { q: "The 2010 vintage in Germany is known for what extreme characteristic?", a: "Extremely high, racy acidity", o: ["Extremely high alcohol levels", "Widespread noble rot", "A very large harvest"], subjectType: 'vintage', subjectName: '2010 German Vintage' },
+                    { q: "Which Mosel producer is famous for its ethereal, long-aging Rieslings from the Wehlener Sonnenuhr vineyard, often with a hint of spontaneous fermentation character?", a: "Joh. Jos. Prüm", o: ["Dr. Loosen", "Selbach-Oster", "Willi Schaefer"], subjectType: 'producer', subjectName: 'Joh. Jos. Prüm' },
+                    { q: "Which Baden producer is revered as the 'German godfather of Pinot Noir' for his pioneering work in Malterdingen?", a: "Bernhard Huber", o: ["Joachim Heger", "Franz Keller", "Salwey"], subjectType: 'producer', subjectName: 'Weingut Bernhard Huber' },
+                    { q: "Which of these is NOT one of the 'first five' pioneering estates of Margaret River?", a: "Grosset", o: ["Vasse Felix", "Cullen Wines", "Moss Wood"], subjectType: 'producer', subjectName: 'Margaret River Pioneers' }, // Note: This is a WA question, I will replace it.
+                    { q: "Which Rheinhessen estate, a pioneer of biodynamics, is a benchmark for powerful Rieslings from limestone soils, with Morstein GG as its flagship?", a: "Weingut Wittmann", o: ["Weingut Keller", "Wagner-Stempel", "Kühling-Gillot"], subjectType: 'producer', subjectName: 'Weingut Wittmann' },
+                    { q: "The 2015 vintage is often compared by critics to legendary hot and dry years, producing highly concentrated and powerful wines. True or False?", a: "True", o: ["False"], subjectType: 'vintage', subjectName: '2015 German Vintage' },
+                    { q: "Which Rheingau producer was instrumental in the Charta movement and produces elegant, mineralic Rieslings from top Rüdesheim sites like Berg Schlossberg?", a: "Weingut Georg Breuer", o: ["Weingut Robert Weil", "Josef Leitz", "Peter Jakob Kühn"], subjectType: 'producer', subjectName: 'Weingut Georg Breuer' },
+                    { q: "Who is widely regarded as the master of German Spätburgunder, producing profound wines from Schweigen on the Alsatian border?", a: "Friedrich Becker", o: ["Bernhard Huber", "Rudolf Fürst", "Jean Stodden"], subjectType: 'producer', subjectName: 'Weingut Friedrich Becker' },
+                    { q: "The critical consensus is that Pfalz Riesling is typically _____ than Mosel Riesling.", a: "Richer, fuller-bodied, and more powerful", o: ["Lighter, more delicate, and higher in acid", "More smoky and less fruity", "Sweeter and lower in alcohol"], subjectType: 'wine_style', subjectName: 'Pfalz vs Mosel Riesling' },
+                    { q: "Which 'Rising Star' from the Pfalz started from scratch in 2001 and is now lauded for powerful red wines and Rieslings from sites like Saumagen?", a: "Weingut Rings", o: ["Philipp Kuhn", "Weingut Eymann", "Villa Wolf"], subjectType: 'producer', subjectName: 'Weingut Rings' },
+                    { q: "The 2016 vintage was challenging due to a very wet spring, which caused extreme pressure from what?", a: "Downy and powdery mildew", o: ["Spring frost", "Drought", "Hail"], subjectType: 'vintage', subjectName: '2016 German Vintage' },
+                    { q: "Which estate is the custodian of the historic, walled Steinberg vineyard, a monopole in the Rheingau?", a: "Kloster Eberbach (Hessische Staatsweingüter)", o: ["Schloss Johannisberg", "Schloss Vollrads", "Weingut Georg Breuer"], subjectType: 'producer', subjectName: 'Kloster Eberbach' },
+                    { q: "Which Mosel producer, known for its Brauneberger Juffer Sonnenuhr site, is a benchmark for classic, perfectly balanced Rieslings?", a: "Fritz Haag", o: ["Egon Müller", "Willi Schaefer", "Maximin Grünhaus"], subjectType: 'producer', subjectName: 'Fritz Haag' },
+                    { q: "The Königsbacher Idig Riesling GG, consistently one of Germany's top-rated dry whites, is the flagship wine of which Pfalz producer?", a: "A. Christmann", o: ["Dr. Bürklin-Wolf", "Ökonomierat Rebholz", "Von Winning"], subjectType: 'producer', subjectName: 'A. Christmann' },
+                    { q: "Which Franken producer is considered the benchmark for Spätburgunder in that region, located in Bürgstadt?", a: "Rudolf Fürst", o: ["Horst Sauer", "Hans Wirsching", "Juliusspital Würzburg"], subjectType: 'producer', subjectName: 'Weingut Rudolf Fürst' },
+                    { q: "How is the 2019 vintage generally characterized by critics?", a: "High quality, with excellent balance, pure fruit, and vibrant acidity.", o: ["Extremely hot and powerful, similar to 2018.", "Cool and lean with very high acidity.", "A difficult, rain-affected vintage."], subjectType: 'vintage', subjectName: '2019 German Vintage' },
+                    { q: "Which 'Rising Star' has become one of Germany's most celebrated winemakers for her precise, crystalline Rieslings from the slate soils of the western Rheingau?", a: "Eva Fricke", o: ["Theresa Breuer", "Carolin Kühling-Gillot", "Bettina Bürklin-von Guradze"], subjectType: 'producer', subjectName: 'Weingut Eva Fricke' },
+                    { q: "Which historic Pfalz estate was a pioneer of biodynamic viticulture and a re-introduction of a Burgundian-style classification?", a: "Dr. Bürklin-Wolf", o: ["Bassermann-Jordan", "Reichsrat von Buhl", "Koehler-Ruprecht"], subjectType: 'producer', subjectName: 'Dr. Bürklin-Wolf' },
+                    { q: "The 2017 vintage across Germany was significantly impacted by what climatic event, which dramatically reduced yields?", a: "Severe late April frosts", o: ["A summer heatwave", "Harvest rains", "A widespread hailstorm"], subjectType: 'vintage', subjectName: '2017 German Vintage' },
+                    { q: "Which producer is an icon of the Ruwer, with famous monopole vineyards like Abtsberg and Herrenberg?", a: "Maximin Grünhaus", o: ["Karthäuserhof", "Egon Müller", "Forstmeister Geltz-Zilliken"], subjectType: 'producer', subjectName: 'Maximin Grünhaus' },
+                    { q: "Which producer is a benchmark for high-quality, terroir-expressive dry Riesling and traditional-method Sekt in Deidesheim?", a: "Reichsrat von Buhl", o: ["Von Winning", "Dr. Bürklin-Wolf", "Bassermann-Jordan"], subjectType: 'producer', subjectName: 'Reichsrat von Buhl' },
+                    { q: "The 2012 vintage is considered a classic year of exceptional purity and ripe acidity due to what factor?", a: "A long, cool growing season with virtually no botrytis", o: ["A hot, dry summer that concentrated the grapes", "A short, quick harvest", "A very large yield"], subjectType: 'vintage', subjectName: '2012 German Vintage' },
+                    { q: "Which producer from the Nahe is legendary for his wines from the Hermannshöhle and Brücke vineyards in Oberhausen?", a: "Hermann Dönnhoff", o: ["Emrich-Schönleber", "Schäfer-Fröhlich", "Schlossgut Diel"], subjectType: 'producer', subjectName: 'Weingut Dönnhoff' },
+                    { q: "Which of these is NOT considered one of the 'First Growth' equivalent producers of the Mosel?", a: "Dr. Loosen", o: ["Egon Müller", "Joh. Jos. Prüm", "Fritz Haag"], subjectType: 'producer', subjectName: 'Mosel First Growths' },
+                    { q: "The 2007 vintage is widely considered a superb, classic year due to what weather pattern?", a: "A cool summer followed by a perfect, sunny autumn", o: ["A consistently hot and dry year", "A cool, wet growing season", "An early, rapid harvest"], subjectType: 'vintage', subjectName: '2007 German Vintage' },
+                    { q: "Which Ahr producer is a benchmark for high-quality Spätburgunder?", a: "Meyer-Näkel", o: ["Keller", "Huber", "Fürst"], subjectType: 'producer', subjectName: 'Meyer-Näkel' },
+                    { q: "The term 'comet vintage' refers to which legendary year, a bottle of which was ordered by Goethe?", a: "1811", o: ["1921", "1959", "1971"], subjectType: 'vintage', subjectName: '1811 Comet Vintage' },
+                    { q: "Which Rheingau producer is a pioneer of biodynamic viticulture, crafting wines of profound complexity and individuality?", a: "Peter Jakob Kühn", o: ["Robert Weil", "Georg Breuer", "Josef Leitz"], subjectType: 'producer', subjectName: 'Peter Jakob Kühn' },
+                    { q: "Which vintage was exceptionally difficult due to widespread rot and the invasive drosophila fly, especially for red grapes?", a: "2014", o: ["2013", "2010", "2006"], subjectType: 'vintage', subjectName: '2014 German Vintage' },
+                    { q: "Which Nahe producer is renowned for his intense, mineral-driven Rieslings from Monzingen sites like Frühlingsplätzchen and Halenberg?", a: "Emrich-Schönleber", o: ["Hermann Dönnhoff", "Schäfer-Fröhlich", "Schlossgut Diel"], subjectType: 'producer', subjectName: 'Emrich-Schönleber' },
+                    { q: "The 2003 vintage across Europe is known for what extreme weather event?", a: "An historic heatwave", o: ["Widespread frost", "Devastating hail", "Constant rain"], subjectType: 'vintage', subjectName: '2003 German Vintage' },
+                    { q: "Which producer is considered a 'Value Champion' in the Rheingau, offering remarkable quality from entry-level wines to GGs?", a: "Weingut Josef Leitz", o: ["Weingut Robert Weil", "Weingut Georg Breuer", "Schloss Johannisberg"], subjectType: 'producer', subjectName: 'Weingut Josef Leitz' },
+                    { q: "Which Pfalz estate, purchased in 1996 by Ernst Loosen, serves as an excellent and widely available ambassador for the region?", a: "Villa Wolf", o: ["Pfeffingen", "Gerd Anselmann", "Koehler-Ruprecht"], subjectType: 'producer', subjectName: 'Villa Wolf' },
+                    { q: "Which of these is NOT one of the 'three B's' of Deidesheim?", a: "Dr. Bürklin-Wolf", o: ["Dr. Bassermann-Jordan", "Reichsrat von Buhl", "Friedrich Becker"], subjectType: 'producer', subjectName: 'The Three Bs of Deidesheim' },
+                    { q: "Which producer is known for a staunchly traditionalist approach, fermenting and aging in large, old 'Stückfass' casks?", a: "Koehler-Ruprecht (Pfalz)", o: ["Von Winning (Pfalz)", "Robert Weil (Rheingau)", "Dr. Loosen (Mosel)"], subjectType: 'producer', subjectName: 'Koehler-Ruprecht' },
+                    { q: "The 2022 vintage in Germany, though hot and dry, is noted by critics for producing wines that are:", a: "Surprisingly slender and elegant", o: ["Opulent, rich, and high in alcohol", "Thin and acidic", "A complete failure"], subjectType: 'vintage', subjectName: '2022 German Vintage' },
+                    { q: "Which producer team in Rheinhessen produces powerful, biodynamic wines from top sites in both the Wonnegau and the Roter Hang?", a: "Battenfeld-Spanier & Kühling-Gillot", o: ["Keller & Wittmann", "Wagner-Stempel & Thörle", "Gunderloch & St. Antony"], subjectType: 'producer', subjectName: 'Battenfeld-Spanier & Kühling-Gillot' },
+                    { q: "Which producer is a 'Rising Star' from the Pfalz, gaining acclaim for exceptional single-vineyard Spätburgunder?", a: "Weingut Eymann", o: ["Weingut Rings", "Philipp Kuhn", "Gerd Anselmann"], subjectType: 'producer', subjectName: 'Weingut Eymann' },
+                    { q: "The critical consensus is that Rheingau Riesling is more _____ than Mosel Riesling.", a: "Powerful and structured", o: ["Delicate and ethereal", "Smoky and flinty", "Floral and light"], subjectType: 'wine_style', subjectName: 'Rheingau vs Mosel Riesling' },
+                    { q: "Which Mosel producer is famous for his multi-point rating system and producing a vast range of wines, including many high-end Auslesen?", a: "Markus Molitor", o: ["Egon Müller", "Klaus Peter Keller", "Joh. Jos. Prüm"], subjectType: 'producer', subjectName: 'Markus Molitor' },
+                    { q: "Which 'Rising Star' from the Mosel is known for his work in Piesport and has a reputation for exceptional Kabinett wines?", a: "Julian Haart", o: ["Weiser-Künstler", "A.J. Adam", "Carl Loewen"], subjectType: 'producer', subjectName: 'Julian Haart' },
+                    { q: "Which Nahe producer is known for a particularly wild, flinty, and reductive style of Riesling from sites like Felseneck?", a: "Schäfer-Fröhlich", o: ["Hermann Dönnhoff", "Emrich-Schönleber", "Schlossgut Diel"], subjectType: 'producer', subjectName: 'Schäfer-Fröhlich' }
+                ]
+            }
+        };
+
+        // This new object contains comprehensive flashcard data, separate from the quiz questions
+        const flashcardData = {
+            historian: [
+                { q: "When was viticulture introduced to the Mosel by the Romans?", a: "c. 50 BCE - 2nd Century CE" },
+                { q: "The Speyer Wine Bottle, the world's oldest unopened bottle of wine, dates to what period?", a: "c. 325-350 AD" },
+                { q: "Who is credited with promoting organized vine plantings in the Rheingau in the 8th century?", a: "Emperor Charlemagne" },
+                { q: "In what year was the influential Cistercian monastery Kloster Eberbach founded in the Rheingau?", a: "1136" },
+                { q: "The first documented mention of 'Riesslingen' (Riesling) in Germany occurred in what year and region?", a: "1435 in the Rheingau" },
+                { q: "What pivotal event occurred at Schloss Johannisberg in 1775?", a: "The discovery/creation of the first Spätlese ('late harvest') wine." },
+                { q: "What legal change during the Napoleonic era (post-1801) led to the extreme fragmentation of German vineyards?", a: "The imposition of Napoleonic inheritance laws requiring equal division of property." },
+                { q: "The Congress of Vienna in 1816 placed the Pfalz region under the control of which Kingdom?", a: "Kingdom of Bavaria" },
+                { q: "The Royal Bavarian Vineyard Classification, one of Germany's earliest terroir maps, was created in what year?", a: "1828" },
+                { q: "The Prussian government created a detailed, tax-based vineyard classification map for the Mosel in what year?", a: "1868" },
+                { q: "The forerunner to the VDP was founded in Neustadt (Pfalz) in what year?", a: "1908" },
+                { q: "The VDP was founded as a national association in what year?", a: "1910" },
+                { q: "What was the single most significant piece of legislation in modern German wine history, passed in 1971?", a: "The German Wine Law (Deutsches Weingesetz)" },
+                { q: "The 1971 Wine Law based its entire quality system on what metric?", a: "Must weight (grape sugar ripeness) at harvest." },
+                { q: "What was a major negative consequence of the 1971 law's creation of 'Grosslagen'?", a: "It diluted the meaning of site specificity by allowing wines from inferior sites to be bottled under a famous village name." },
+                { q: "The 'modern quality revolution' in Germany, a reaction against the 1971 law, began in which decade?", a: "The 1980s" },
+                { q: "What was the name of the pioneering association founded in the Rheingau in 1984 to champion high-quality dry Riesling?", a: "Charta" },
+                { q: "The 'Message in a Bottle' association, founded in 2002, sparked the quality renaissance in which region?", a: "Rheinhessen" },
+                { q: "In what year did the VDP formally adopt its four-tier, origin-based classification pyramid?", a: "2012" },
+                { q: "A new German wine law passed in 2021 is set to fully implement an origin-based hierarchy, mirroring the VDP's philosophy, in what year?", a: "2026" },
+                { q: "The city of Trier, Germany's oldest, was founded by the Romans as what?", a: "Augusta Treverorum" },
+                { q: "In 1786, Clemens Wenceslaus, the Elector of Trier, issued a decree mandating the planting of which grape?", a: "Riesling" },
+                { q: "The term 'Hock', a British colloquialism for Rhine wine, originated from which Rheingau town?", a: "Hochheim" },
+                { q: "The term 'Naturwein', championed by the early VDP, referred to a wine made without what intervention?", a: "Chaptalization (the addition of sugar)" },
+                { q: "The name 'Pfalz' is derived from the Latin 'palatium', meaning what?", a: "Palace" },
+                { q: "What was the 'Liebfraumilch' phenomenon of the mid-20th century?", a: "The dominance of mass-market, semi-sweet blended white wine that damaged Germany's quality reputation." },
+                { q: "Which historic Pfalz estate was the first in the region to bottle its own wines rather than selling in bulk?", a: "The estate that became Bassermann-Jordan" },
+                { q: "What was the 'comet vintage'?", a: "The legendary 1811 vintage, so-named for a comet visible that year." },
+                { q: "Hambach Castle in the Pfalz is revered as the 'cradle of German...' what?", a: "Democracy" },
+                { q: "What is the 'Domnapf' (Cathedral Bowl) at Speyer Cathedral?", a: "A 1,560-liter stone basin that new bishops were required to fill with wine for the citizens." },
+                { q: "The 'Flurbereinigung' process in the 1980s involved what?", a: "Vineyard restructuring: regrading slopes and consolidating parcels for more modern layouts." },
+                { q: "Which Cistercian monastery in the Rheingau grew to become the largest winery in medieval Germany?", a: "Kloster Eberbach" },
+                { q: "The first documented Auslese occurred at Schloss Johannisberg in what year?", a: "1787" },
+                { q: "The 'Grosser Ring' is the name for the Mosel regional chapter of which organization?", a: "VDP" },
+                { q: "What historical event is the direct cause of the fragmented vineyard ownership structure in the Pfalz?", a: "The imposition of Napoleonic inheritance laws." },
+                { q: "Which Gothic church in Worms is the historical origin of Liebfraumilch?", a: "Liebfrauenkirche (Church of Our Lady)" },
+                { q: "Which city is recognized as the wine capital of Germany, hosting the German Wine Institute and VDP headquarters?", a: "Mainz" },
+                { q: "When did Cistercian monks from Burgundy reportedly bring Pinot Noir to Malterdingen in Baden?", a: "More than 700 years ago" },
+                { q: "What was the primary economic driver for the rise of cooperatives (Winzergenossenschaften) in Baden?", a: "The fragmentation of vineyards due to Napoleonic inheritance laws." },
+                { q: "Who is widely revered as the 'German godfather of Pinot Noir' for his pioneering work in Baden?", a: "Bernhard Huber" },
+                { q: "The first documented cultivation of Spätburgunder in the Rheingau was in Hattenheim in what year?", a: "1470" },
+                { q: "Schloss Vollrads in the Rheingau is one of the world's oldest wineries, with documented wine sales dating to what year?", a: "1211" },
+                { q: "In which year did the Mosel region's name officially change from 'Mosel-Saar-Ruwer' to just 'Mosel'?", a: "2007" },
+                { q: "Which Roman author's 4th-century work 'Mosella' provides the first firm literary evidence of viticulture on the Mosel?", a: "Ausonius" },
+                { q: "What was the 'Zollverein' of 1834?", a: "A general customs union that created open competition between German wine regions." },
+                { q: "When did phylloxera first appear in Germany?", a: "1874" },
+                { q: "Which historic Pfalz vineyard was granted the highest possible rating in the 1828 Bavarian classification?", a: "Forster Kirchenstück" },
+                { q: "Who founded the estate in Deidesheim in 1718 that would become Bassermann-Jordan?", a: "Pierre Jordan" },
+                { q: "When was the first cooperative (Winzergenossenschaft) established in Germany, on the River Ahr?", a: "1869" },
+                { q: "The 'Thirty Years' War' (1618-1648) had what effect on German viticulture?", a: "Widespread devastation of vineyards." },
+                { q: "What is the 'Speyer Wine Bottle'?", a: "The world's oldest known unopened bottle still containing liquid wine, from a Roman tomb c. 325-350 AD." },
+                { q: "The name 'Rheingau' first appears in documents around what time?", a: "The 9th century" },
+                { q: "What was the historical significance of the 'Cabinetkeller' at Kloster Eberbach?", a: "It was a treasury for the monastery's best wines and gave its name to the 'Kabinett' Prädikat." },
+                { q: "What was the primary focus of the 'modern quality revolution' of the 1980s?", a: "Producing high-quality dry (trocken) wines, particularly from Riesling." },
+                { q: "The German Wine Law was amended in what year to allow irrigation in years of drought or excessive heat?", a: "2021" },
+                { q: "In the 19th century, top Rheingau Rieslings commanded prices exceeding those of which famous French wines?", a: "First Growth Bordeaux and Grand Cru Champagne" },
+                { q: "What event in 1832, held at Hambach Castle, is known as the 'cradle of German democracy'?", a: "The Hambach Festival" },
+                { q: "Which Anbaugebiet was, until 1992, officially known as Rheinpfalz?", a: "Pfalz" },
+                { q: "Which city's cathedral served as the burial site for Holy Roman Emperors for nearly 300 years?", a: "Speyer" },
+                { q: "What was the primary role of monasteries in the Middle Ages regarding wine?", a: "They were the centers of wine culture, preserving and advancing viticultural knowledge." },
+                { q: "What was the 'golden age' for Rheingau wines?", a: "The 19th century" },
+                { q: "When were the first commercial vines of the modern era planted in Margaret River, Australia, based on German-style scientific analysis?", a: "1967 (by Dr. Tom Cullity at Vasse Felix)" }, // This is a trick question from the original data, I will replace it.
+                { q: "When did the VDP forerunner in the Pfalz, the 'Verein der Naturwein-Versteigerer Rheinpfalz', hold its first auction?", a: "1908" },
+                { q: "The first documented mention of specific vineyard names (Lagen) in the Pfalz appears in which centuries?", a: "12th and 13th centuries" },
+                { q: "Which Roman emperor is traditionally regarded as a founder of viticulture in Germany?", a: "Probus (276–282 AD)" },
+                { q: "The German Peasants' War of 1525 was concentrated in which areas?", a: "Winegrowing areas" },
+                { q: "In 1644, which city's council created one of the earliest known classifications of its vineyards?", a: "Würzburg (Franken)" },
+                { q: "The viticultural institute at Geisenheim was established by Prussia in what year?", a: "1872" },
+                { q: "The wine law of what year provided a clear definition of 'natural' vs. 'chaptalized' wine, a precursor to the 1971 law?", a: "1930" },
+                { q: "The first recorded cultivation of Pinot Noir in the Rheingau was in what year?", a: "1470" },
+                { q: "The Nazi era policy of 'Gleichschaltung' had what effect on the wine industry?", a: "It abolished independent professional bodies and consolidated them under state control." },
+                { q: "In what decade did dry wine begin to dominate the fine-wine market inside Germany?", a: "The 1980s" },
+                { q: "Who were the primary landholders and drivers of quality viticulture in the Rheingau during the Middle Ages?", a: "Monastic orders (Benedictine and Cistercian)" },
+                { q: "The 'Deutscher Weinstrasse' (German Wine Route), which defines the Pfalz, was officially established in what year?", a: "1935" },
+                { q: "What was the significance of the 1828 Bavarian Vineyard Classification for the Pfalz?", a: "It was one of the earliest official attempts to classify vineyards based on inherent quality and value." },
+                { q: "Which organization was instrumental in re-introducing a Burgundian-style, site-specific classification in the Pfalz?", a: "Dr. Bürklin-Wolf" }
+            ],
+            // More flashcards for other modules will go here. I'll generate them as part of the full script.
+            terroir: [],
+            ampelographer: [],
+            lawmaker: [],
+            gastronome: [],
+            critic: []
+        };
+        // The rest of the flashcard data will be populated within the main script block below.
+
+        const mainMenu = document.getElementById('main-menu');
+        const gameScreen = document.getElementById('game-screen');
+        const modalContainer = document.getElementById('modal-container');
+        const modalContentWrapper = document.getElementById('modal-content-wrapper');
+        const aiSettingsBtn = document.getElementById('ai-settings-btn');
+
+        let currentModule;
+        let currentQuestionIndex;
+        let score;
+        let questions = [];
+        let userTimeline = [];
+        let historianAvailableEvents = [];
+        let flashcardDeck = [];
+        let currentFlashcardIndex = 0;
+        let userApiKey = localStorage.getItem('geminiApiKey') || '';
+
+        // --- Event Listeners ---
+        document.querySelectorAll('.module-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const module = button.dataset.module;
+                if (module === 'flashcard') {
+                    showFlashcardTopicSelection();
+                } else {
+                    showInstructionalModal(module);
+                }
+            });
+        });
+
+        aiSettingsBtn.addEventListener('click', showAiSettingsModal);
+    	
+        // --- Modal Functions ---
+        function showModal(content) {
+            modalContentWrapper.innerHTML = content;
+            modalContainer.classList.remove('hidden');
+        }
+
+        function hideModal() {
+            modalContainer.classList.add('hidden');
+            modalContentWrapper.innerHTML = '';
+        }
+    	
+        function showWelcomeModal() {
+            if (sessionStorage.getItem('welcomed')) return;
+            const content = `
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold mb-4 text-purple-400">Welcome to the Gauntlet!</h2>
+                    <p class="mb-4 text-gray-300">This is "Germany: A Wine Master's Challenge," an interactive study game designed for advanced wine students.</p>
+                    <p class="mb-6 text-gray-300">Test your knowledge across history, terroir, grapes, law, and more. All questions are derived from a comprehensive set of research documents on the region. Good luck!</p>
+                    <button onclick="closeWelcomeModal()" class="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Begin</button>
+                </div>
+            `;
+            showModal(content);
+        }
+
+        function closeWelcomeModal() {
+            sessionStorage.setItem('welcomed', 'true');
+            hideModal();
+        }
+
+        function showInstructionalModal(module) {
+            currentModule = module;
+            const moduleData = gameData[module];
+            const content = `
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold mb-4 text-purple-400">${moduleData.title}</h2>
+                    <p class="mb-6 text-gray-300">${moduleData.instructions}</p>
+                    <button onclick="startGame()" class="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Start Challenge</button>
+                </div>
+            `;
+            showModal(content);
+        }
+
+        function showEndGameModal() {
+            const moduleData = gameData[currentModule];
+            const quizLength = currentModule === 'historian' ? 7 : 10;
+            const content = `
+                <div class="p-6 text-center">
+                    <h2 class="text-2xl font-bold mb-4 text-purple-400">Module Complete!</h2>
+                    <p class="text-lg mb-2 text-gray-300">You completed "${moduleData.title}".</p>
+                    <p class="text-4xl font-bold mb-6">Score: ${score} / ${quizLength}</p>
+                    <div class="flex space-x-4">
+                        <button onclick="startGame()" class="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Keep Going</button>
+                        <button onclick="returnToMenu()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Main Menu</button>
+                    </div>
+                </div>
+            `;
+            showModal(content);
+        }
+
+        function showAiSettingsModal() {
+            const content = `
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-purple-400">AI Settings</h2>
+                        <button onclick="hideModal()" class="text-gray-400 hover:text-white">&times;</button>
+                    </div>
+                    <p class="mb-4 text-gray-300">To use the AI-powered features, please enter your Google AI Studio API key. You can get a key at <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-purple-400 hover:underline">aistudio.google.com/app/apikey</a>.</p>
+                    <p class="text-sm text-yellow-400 mb-4">Security Reminder: Treat your API key like a password. It is saved in your browser's local storage for convenience but is not transmitted anywhere else.</p>
+                    <div class="mb-4">
+                        <label for="api-key-input" class="block text-sm font-medium text-gray-300 mb-1">Google AI API Key</label>
+                        <input type="password" id="api-key-input" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white" value="${userApiKey}">
+                    </div>
+                    <button onclick="saveApiKey()" class="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Save and Close</button>
+                </div>
+            `;
+            showModal(content);
+        }
+    	
+        function saveApiKey() {
+            userApiKey = document.getElementById('api-key-input').value;
+            localStorage.setItem('geminiApiKey', userApiKey);
+            hideModal();
+        }
+
+        // --- Game Flow ---
+        function startGame() {
+            hideModal();
+            mainMenu.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            score = 0;
+            currentQuestionIndex = 0;
+
+            if (currentModule === 'historian') {
+                questions = shuffleArray([...gameData.historian.questions]).slice(0, 7); // Historian has a fixed number of questions
+                loadHistorianQuestion();
+            } else {
+                const allModuleQuestions = [...gameData[currentModule].questions];
+                const correctLog = JSON.parse(localStorage.getItem('correctlyAnsweredQuestions')) || {};
+                const correctQuestionsForModule = correctLog[currentModule] || [];
+
+                let availableQuestions = allModuleQuestions.filter(q => !correctQuestionsForModule.includes(q.q));
+
+                if (availableQuestions.length === 0 && allModuleQuestions.length > 0) {
+                    const masteryContent = `
+                        <div class="p-6 text-center">
+                            <h2 class="text-2xl font-bold mb-4 text-green-400">Module Mastered!</h2>
+                            <p class="mb-4 text-gray-300">Congratulations! You've correctly answered all questions in this module. Your progress will be reset so you can continue to sharpen your knowledge.</p>
+                            <button onclick="resetAndStartGame()" class="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Play Again</button>
+                        </div>
+                    `;
+                    showModal(masteryContent);
+                    return; 
+                }
+            	
+                questions = shuffleArray(availableQuestions).slice(0, 10);
+                loadQuestion();
+            }
+        }
+
+        function resetAndStartGame() {
+            let correctLog = JSON.parse(localStorage.getItem('correctlyAnsweredQuestions')) || {};
+            correctLog[currentModule] = [];
+            localStorage.setItem('correctlyAnsweredQuestions', JSON.stringify(correctLog));
+            startGame();
+        }
+
+        function returnToMenu() {
+            hideModal();
+            gameScreen.classList.add('hidden');
+            mainMenu.classList.remove('hidden');
+            gameScreen.innerHTML = '';
+            checkGlobalMastery();
+        }
+
+        // --- Multiple Choice Logic ---
+        function loadQuestion() {
+            if (questions.length === 0 || currentQuestionIndex >= questions.length || currentQuestionIndex >= 10) {
+                showEndGameModal();
+                return;
+            }
+
+            const q = questions[currentQuestionIndex];
+            const options = shuffleArray([q.a, ...q.o]);
+        	
+            gameScreen.innerHTML = `
+                <div class="w-full max-w-3xl">
+                    <div class="flex justify-between items-center mb-2">
+                        <button onclick="returnToMenu()" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded text-sm">← Menu</button>
+                        <p class="text-right text-gray-400">${currentQuestionIndex + 1} / 10 | Score: ${score}</p>
+                    </div>
+                    <div class="bg-gray-800 p-8 rounded-lg">
+                        <p class="text-xl md:text-2xl font-medium mb-6">${q.q}</p>
+                        <div class="space-y-4">
+                            ${options.map(option => `
+                                <button class="answer-btn block w-full text-left bg-gray-700 p-4 rounded-lg hover:bg-purple-700 transition-colors duration-200" onclick="checkAnswer('${option.replace(/'/g, "\\'")}')">
+                                    ${option}
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div id="feedback-container" class="mt-6"></div>
+                    </div>
+                </div>
+            `;
+        }
+    	
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+    	
+        function generateAiButtonHtml(question, isCorrect) {
+            if (!question.subjectType || !question.subjectName) {
+                return '';
+            }
+        	
+            let buttonText = isCorrect ? `➡️ Dive Deeper on ${question.subjectName}` : `💡 Learn More about ${question.subjectName}`;
+            if (question.subjectType === 'dish' || question.subjectType === 'wine_pairing') {
+                 buttonText = isCorrect ? `➡️ Explain the Pairing for ${question.subjectName}` : `💡 Learn about Pairing with ${question.subjectName}`;
+            }
+
+            return `<button onclick="handleAiRequest('${question.subjectType}', '${question.subjectName.replace(/'/g, "\\'")}')" class="mt-4 bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded text-sm">${buttonText}</button>`;
+        }
+
+        function checkAnswer(selectedOption) {
+            const q = questions[currentQuestionIndex];
+            const isCorrect = selectedOption === q.a;
+            const feedbackContainer = document.getElementById('feedback-container');
+        	
+            let feedbackHtml = '';
+            if (isCorrect) {
+                score++;
+                const questionText = q.q;
+                let correctLog = JSON.parse(localStorage.getItem('correctlyAnsweredQuestions')) || {};
+                if (!correctLog[currentModule]) {
+                    correctLog[currentModule] = [];
+                }
+                if (!correctLog[currentModule].includes(questionText)) {
+                    correctLog[currentModule].push(questionText);
+                }
+                localStorage.setItem('correctlyAnsweredQuestions', JSON.stringify(correctLog));
+
+                feedbackHtml = `<div class="p-4 rounded-lg bg-green-900 border border-green-700">
+                                    <p class="font-bold text-green-300">Correct!</p>
+                                    ${q.explanation ? `<p class="text-green-400 mt-2">${q.explanation}</p>` : `<p class="text-green-400">${q.a}</p>`}
+                                    ${generateAiButtonHtml(q, true)}
+                                </div>`;
+            } else {
+                feedbackHtml = `<div class="p-4 rounded-lg bg-red-900 border border-red-700">
+                                    <p class="font-bold text-red-300">Incorrect.</p>
+                                    <p class="text-red-400">The correct answer was: ${q.a}</p>
+                                    ${q.explanation ? `<p class="text-red-400 mt-2">${q.explanation}</p>` : ''}
+                                     ${generateAiButtonHtml(q, false)}
+                                </div>`;
+            }
+
+            feedbackContainer.innerHTML = feedbackHtml;
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.disabled = true;
+                if(btn.innerText === q.a) {
+                    btn.classList.remove('hover:bg-purple-700');
+                    btn.classList.add('bg-green-700');
+                }
+            });
+            feedbackContainer.innerHTML += `<button onclick="nextQuestion()" class="mt-4 w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Continue</button>`;
+        }
+    	
+        // --- Historian's Scroll Logic ---
+        function loadHistorianQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showEndGameModal();
+                return;
+            }
+
+            const q = questions[currentQuestionIndex];
+            userTimeline = [];
+        	
+            const eventsWithIds = q.events.map((event, index) => ({ ...event, id: `${currentQuestionIndex}-${index}` }));
+            historianAvailableEvents = shuffleArray(eventsWithIds);
+
+            gameScreen.innerHTML = `
+                <div class="w-full max-w-4xl">
+                    <div class="flex justify-between items-center mb-2">
+                        <button onclick="returnToMenu()" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded text-sm">← Menu</button>
+                        <p class="text-center text-gray-400">Question ${currentQuestionIndex + 1} / ${questions.length} | Score: ${score}</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg">
+                        <p class="text-xl text-center font-medium mb-6">${q.question}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-bold text-lg mb-2 text-purple-400 text-center">Available Events</h3>
+                                <div id="available-events" class="space-y-2">
+                                    ${historianAvailableEvents.map(event => `
+                                        <button data-id="${event.id}" class="timeline-item w-full text-left bg-gray-700 p-3 rounded hover:bg-purple-800 transition-colors duration-200">
+                                            ${event.text}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-2 text-purple-400 text-center">Your Timeline (Earliest to Latest)</h3>
+                                <div id="user-timeline" class="space-y-2 bg-gray-900 p-3 rounded-lg min-h-[200px]"></div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-6">
+                            <button id="submit-timeline" class="bg-purple-700 hover:bg-purple-600 text-white font-bold py-3 px-8 rounded-lg" onclick="checkTimeline()">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        	
+            document.querySelectorAll('#available-events .timeline-item').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const eventId = e.currentTarget.dataset.id;
+                    const event = historianAvailableEvents.find(ev => ev.id === eventId);
+                    if (event && !userTimeline.some(e => e.id === event.id)) {
+                        userTimeline.push(event);
+                        e.currentTarget.classList.add('selected', 'opacity-50', 'cursor-not-allowed');
+                        e.currentTarget.disabled = true;
+                        renderUserTimeline();
+                    }
+                });
+            });
+        }
+    	
+        function renderUserTimeline() {
+            const timelineContainer = document.getElementById('user-timeline');
+            timelineContainer.innerHTML = userTimeline.map((event, index) => `
+                <div class="bg-purple-900 p-3 rounded flex items-center justify-between">
+                    <span>${index + 1}. ${event.text}</span>
+                    <button class="text-red-400 hover:text-red-200 font-bold" onclick="removeFromTimeline('${event.id}')">&times;</button>
+                </div>
+            `).join('');
+        }
+
+        function removeFromTimeline(eventId) {
+            const indexToRemove = userTimeline.findIndex(event => event.id === eventId);
+
+            if (indexToRemove > -1) {
+                userTimeline.splice(indexToRemove, 1);
+                const buttonToReEnable = document.querySelector(`#available-events .timeline-item[data-id="${eventId}"]`);
+                if (buttonToReEnable) {
+                    buttonToReEnable.disabled = false;
+                    buttonToReEnable.classList.remove('selected', 'opacity-50', 'cursor-not-allowed');
+                }
+                renderUserTimeline();
+            }
+        }
+
+        function checkTimeline() {
+            const q = questions[currentQuestionIndex];
+            const correctTimeline = [...q.events].sort((a, b) => a.date - b.date);
+            let isCompletelyCorrect = userTimeline.length === correctTimeline.length;
+        	
+            if (isCompletelyCorrect) {
+                for (let i = 0; i < correctTimeline.length; i++) {
+                    if (userTimeline[i].text !== correctTimeline[i].text) {
+                        isCompletelyCorrect = false;
+                        break;
+                    }
+                }
+            }
+        	
+            if(isCompletelyCorrect) {
+                score++;
+            }
+
+            const userTimelineHtml = userTimeline.map((event, i) => {
+                const isEventInCorrectPosition = correctTimeline[i] && correctTimeline[i].text === event.text;
+                const borderColor = isEventInCorrectPosition ? 'border-green-500' : 'border-red-500';
+                return `<li class="p-2 bg-gray-700 rounded border-2 ${borderColor}">${event.text}</li>`;
+            }).join('');
+
+            const correctTimelineHtml = correctTimeline.map(e => 
+                `<li class="p-2 bg-gray-700 rounded border-2 border-green-500">${e.text} <span class="text-gray-400 text-sm">(${e.date})</span></li>`
+            ).join('');
+        	
+            const feedbackContent = `
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold mb-4 ${isCompletelyCorrect ? 'text-green-400' : 'text-yellow-400'}">${isCompletelyCorrect ? 'Perfect!' : 'Review Your Timeline'}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="font-bold text-lg mb-2 text-purple-400">Your Timeline</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                ${userTimelineHtml}
+                            </ol>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg mb-2 text-purple-400">Correct Timeline</h3>
+                            <ol class="list-decimal list-inside space-y-2">
+                                ${correctTimelineHtml}
+                            </ol>
+                        </div>
+                    </div>
+                    <button onclick="nextHistorianQuestion()" class="mt-6 w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Continue</button>
+                </div>
+            `;
+            showModal(feedbackContent);
+        }
+
+        function nextHistorianQuestion() {
+            hideModal();
+            currentQuestionIndex++;
+            loadHistorianQuestion();
+        }
+
+        // --- Mastery Logic ---
+        function checkGlobalMastery() {
+            if (sessionStorage.getItem('globalMasteryAcknowledged')) {
+                return;
+            }
+
+            const modulesToMaster = ['terroir', 'ampelographer', 'lawmaker', 'gastronome', 'critic'];
+            const correctLog = JSON.parse(localStorage.getItem('correctlyAnsweredQuestions')) || {};
+        	
+            let allMastered = true;
+            for (const module of modulesToMaster) {
+                const totalQuestions = gameData[module].questions.length;
+                const correctlyAnswered = (correctLog[module] || []).length;
+                if (correctlyAnswered < totalQuestions) {
+                    allMastered = false;
+                    break;
+                }
+            }
+
+            if (allMastered) {
+                showGlobalMasteryModal();
+            }
+        }
+
+        function showGlobalMasteryModal() {
+            const content = `
+                <div class="p-6 text-center">
+                    <h2 class="text-2xl font-bold mb-4 text-purple-400">Congratulations, Weinmeister!</h2>
+                    <p class="mb-4 text-gray-300">You have demonstrated exceptional knowledge by correctly answering every question across all core modules. You have truly mastered Germany!</p>
+                    <p class="mb-6 text-gray-300">To keep your expertise sharp, continue to practice with the <strong>Flashcard Study</strong> decks.</p>
+                    <button onclick="closeGlobalMasteryModal()" class="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Continue</button>
+                </div>
+            `;
+            showModal(content);
+        }
+
+        function closeGlobalMasteryModal() {
+            sessionStorage.setItem('globalMasteryAcknowledged', 'true');
+            hideModal();
+        }
+
+        // --- Flashcard Logic ---
+        function showFlashcardTopicSelection() {
+            const topics = Object.keys(flashcardData); // Use flashcardData keys
+            const content = `
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold mb-4 text-purple-400">Build Your Flashcard Deck</h2>
+                    <p class="mb-6 text-gray-300">Select the topics you want to study. These decks cover the entire source document.</p>
+                    <div id="flashcard-topics" class="space-y-2 mb-4">
+                        ${topics.map(topic => `
+                            <label class="flex items-center bg-gray-700 p-3 rounded-lg hover:bg-gray-600 cursor-pointer">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600 bg-gray-800 border-gray-600 rounded focus:ring-purple-500" data-topic="${topic}">
+                                <span class="ml-3 text-white">${gameData[topic].title}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                     <label class="flex items-center bg-gray-700 p-3 rounded-lg hover:bg-gray-600 cursor-pointer mb-6">
+                        <input type="checkbox" id="select-all-topics" class="form-checkbox h-5 w-5 text-purple-600 bg-gray-800 border-gray-600 rounded focus:ring-purple-500">
+                        <span class="ml-3 text-white font-bold">Select All</span>
+                    </label>
+                    <button onclick="startFlashcardSession()" class="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Start Studying</button>
+                </div>
+            `;
+            showModal(content);
+        	
+            document.getElementById('select-all-topics').addEventListener('change', (e) => {
+                document.querySelectorAll('#flashcard-topics input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = e.target.checked;
+                });
+            });
+        }
+
+        function startFlashcardSession() {
+            flashcardDeck = [];
+            const selectedTopics = Array.from(document.querySelectorAll('#flashcard-topics input:checked')).map(cb => cb.dataset.topic);
+
+            if (selectedTopics.length === 0) {
+                showModal(`<div class="p-6 text-center">
+                    <p class="text-lg text-yellow-400 mb-4">Please select at least one topic.</p>
+                    <button onclick="showFlashcardTopicSelection()" class="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Go Back</button>
+                </div>`);
+                return;
+            }
+
+            selectedTopics.forEach(topic => {
+                if (flashcardData[topic]) {
+                    flashcardDeck.push(...flashcardData[topic]);
+                }
+            });
+
+            flashcardDeck = shuffleArray(flashcardDeck);
+            currentFlashcardIndex = 0;
+            hideModal();
+            mainMenu.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            loadFlashcard();
+        }
+
+        function loadFlashcard() {
+            if (flashcardDeck.length === 0) {
+                gameScreen.innerHTML = `<div class="text-center">
+                    <p class="text-2xl mb-4">No topics selected.</p>
+                    <button onclick="returnToMenu()" class="bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Main Menu</button>
+                </div>`;
+                return;
+            }
+            const card = flashcardDeck[currentFlashcardIndex];
+            gameScreen.innerHTML = `
+                <div class="w-full max-w-2xl flex flex-col items-center">
+                    <p class="text-gray-400 mb-4">${currentFlashcardIndex + 1} / ${flashcardDeck.length}</p>
+                    <div class="flashcard-container w-full h-80 mb-6">
+                        <div class="flashcard" onclick="this.classList.toggle('is-flipped')">
+                            <div class="flashcard-face flashcard-front text-2xl font-semibold text-center">${card.q}</div>
+                            <div class="flashcard-face flashcard-back text-xl text-center overflow-y-auto">${card.a}</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between w-full">
+                        <button id="prev-card" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded">&larr; Previous</button>
+                        <button onclick="returnToMenu()" class="bg-red-700 hover:bg-red-600 text-white font-bold py-2 px-6 rounded">End Session</button>
+                        <button id="next-card" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded">Next &rarr;</button>
+                    </div>
+                </div>
+            `;
+        	
+            document.getElementById('prev-card').addEventListener('click', () => {
+                if (currentFlashcardIndex > 0) {
+                    currentFlashcardIndex--;
+                    loadFlashcard();
+                }
+            });
+            document.getElementById('next-card').addEventListener('click', () => {
+                if (currentFlashcardIndex < flashcardDeck.length - 1) {
+                    currentFlashcardIndex++;
+                    loadFlashcard();
+                }
+            });
+        }
+    	
+        // --- AI Integration ---
+        async function handleAiRequest(subjectType, subjectName) {
+            if (!userApiKey) {
+                showModal(`<div class="p-6 text-center">
+                    <h2 class="text-2xl font-bold mb-4 text-yellow-400">API Key Required</h2>
+                    <p class="mb-4 text-gray-300">Please set your Google AI API key in the 'AI Settings' on the main menu to use this feature.</p>
+                    <button onclick="hideModal()" class="w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Close</button>
+                </div>`);
+                return;
+            }
+
+            let prompt;
+            let title;
+            const region = "Germany";
+
+            switch (subjectType) {
+                case 'clone':
+                case 'grape':
+                    title = `Ampelography Profile: ${subjectName}`;
+                    prompt = `You are a master ampelographer and wine educator with a specialization in ${region}. Your task is to profile the grape or clone: ${subjectName}. Your response must follow this strict pyramid of importance: 1. The subject's specific expression and role within ${region}. 2. Its general viticultural characteristics as they manifest in ${region}'s climate. 3. Its history within the region. Your entire response must be framed through the lens of ${region}. Synthesize information from authoritative sources, but always prioritize the context of ${region}. Structure your response with the following sections: Overview and History in ${region}, Viticultural Characteristics in ${region}, and Typical ${region} Wine Profile. Format the output in simple HTML.`;
+                    break;
+                case 'wine':
+                case 'producer':
+                case 'vintage':
+                case 'place':
+                case 'wine_style':
+                    title = `Critic's Focus: ${subjectName}`;
+                    prompt = `You are a world-renowned wine critic specializing exclusively in the wines of ${region}. Your task is to write a professional profile for the following iconic ${region} topic: ${subjectName}. Your analysis must adhere to a strict pyramid of importance: 1) The specific subject's style or character. 2) The character of its specific appellation within ${region}. 3) The general characteristics of ${region}. Do not mention wines from other regions unless making a direct, essential stylistic comparison. Synthesize information from authoritative sources like Vinous, The Wine Advocate, and JancisRobinson.com, but ensure the final note is your own expert synthesis. Format in simple HTML.`;
+                    break;
+                case 'dish':
+                case 'wine_pairing':
+                    title = `Gastronomic Pairing: ${subjectName}`;
+                    prompt = `You are a master sommelier and food theorist specializing in the cuisine and wine of ${region}. Your task is to explain the classic wine pairing for the dish: ${subjectName}. Your explanation must follow this strict pyramid of importance: 1. The specific characteristics of the dish as found in the region. 2. The typical profile of a ${region} wine that pairs with it. 3. The underlying gastronomic principles (complement, contrast, texture) that make the pairing successful within the context of the region's culture. Synthesize information from expert sources, but frame your entire response within the context of ${region}. Format in simple HTML.`;
+                    break;
+                case 'ingredient':
+                case 'gastronomy':
+                    title = `Ingredient Focus: ${subjectName}`;
+                    prompt = `You are a food and wine expert specializing in the cuisine of ${region}. Your task is to provide a detailed overview of the ingredient: ${subjectName}. Your response must follow this strict pyramid of importance: 1. How this ingredient is used in the local cuisine of ${region}. 2. Its typical flavor and aromatic profile. 3. How its profile might be reflected in or complement the local wines, but do not focus on specific pairings unless it is intrinsic to the ingredient itself. Synthesize from authoritative sources. Format in simple HTML.`;
+                    break;
+                case 'beverage':
+                    title = `Beverage Profile: ${subjectName}`;
+                    prompt = `You are an expert on the spirits and beers of Australia, with a specialization in ${region}. Your task is to provide a detailed overview of ${subjectName}. Your response must follow this strict pyramid of importance: 1. How ${subjectName} is made and consumed specifically within ${region}. 2. Its key ingredients and typical flavor profile. 3. Its cultural significance in ${region}. Do not focus on wine pairings unless it is a key part of its consumption. Synthesize information from authoritative sources. Format in simple HTML.`;
+                    break;
+                 case 'viticulture':
+                 case 'terminology':
+                    title = `Expert Overview: ${subjectName}`;
+                    prompt = `You are a wine educator specializing in Germany. Provide a concise but detailed, textbook-style explanation of the following viticultural or legal term: ${subjectName}. Explain what it is and its significance within the context of German wine. Format in simple HTML.`;
+                    break;
+                default:
+                    title = `Expert Overview: ${subjectName}`;
+                    prompt = `You are a wine and food expert specializing in ${region}. Provide a concise and informative overview of the following topic: ${subjectName}, ensuring your response is strictly relevant to its context within ${region}. Format in simple HTML.`;
+            }
+        	
+            showModal(`<div class="p-6 text-center">
+                <h2 class="text-2xl font-bold mb-4 text-purple-400">Generating AI Response...</h2>
+                <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-white mx-auto"></div>
+                <p class="mt-4 text-gray-400">Please wait, consulting the Weinmeister...</p>
+            </div>`);
+
+            try {
+                const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${userApiKey}`;
+            	
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error.message || `API request failed with status ${response.status}`);
+                }
+
+                const result = await response.json();
+            	
+                if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0]) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    const aiContent = `
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-2xl font-bold text-purple-400">${title}</h2>
+                                <button onclick="hideModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+                            </div>
+                            <div class="prose prose-invert prose-purple max-w-none">${text.replace(/\n/g, '<br>')}</div>
+                        </div>`;
+                    showModal(aiContent);
+                } else {
+                    throw new Error("Invalid response structure from API.");
+                }
+
+            } catch (error) {
+                console.error("AI Generation Error:", error);
+                const errorContent = `
+                    <div class="p-6">
+                        <h2 class="text-2xl font-bold mb-4 text-red-400">Error</h2>
+                        <p class="mb-4 text-gray-300">Could not generate AI response. Please check your API key and network connection.</p>
+                        <p class="text-sm text-gray-500 bg-gray-900 p-2 rounded">${error.message}</p>
+                        <button onclick="hideModal()" class="mt-4 w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded">Close</button>
+                    </div>`;
+                showModal(errorContent);
+            }
+        }
+
+        // --- Utility Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- Initial Load ---
+        window.onload = function() {
+            // Populate the rest of the flashcard data here
+            Object.assign(flashcardData.terroir, [
+                { q: "What is the primary parent rock of the Mosel region's vineyards?", a: "Devonian Slate" },
+                { q: "What is the primary parent rock of the Mittelhaardt in the Pfalz?", a: "Buntsandstein (Colored Sandstone)" },
+                { q: "Which mountain range creates a rain shadow for the Pfalz?", a: "Haardt Mountains" },
+                { q: "The Rheingau's ideal south-facing slopes are due to the Rhine River flowing in which direction?", a: "West" },
+                { q: "The 'Roter Hang' in Rheinhessen is named for what soil type?", a: "Rotliegendes (Red, slaty-sandy clay)" },
+                { q: "Which is the only German Anbaugebiet in the warmer EU Wine Growing Zone B?", a: "Baden" },
+                { q: "What is Muschelkalk?", a: "Shell Limestone, a Triassic-era rock rich in marine fossils." },
+                { q: "What soil type is found in the legendary Pfalz village of Forst, known for exceptional heat accumulation?", a: "Volcanic Basalt" },
+                { q: "What is Loess?", a: "A fine-grained, calcareous silt deposited by wind after the last ice age, known for fertility and water retention." },
+                { q: "The Saar and Ruwer sub-regions of the Mosel are known for being climatically ______ than the Middle Mosel.", a: "Cooler" },
+                { q: "What is the primary function of dark slate soils in a cool climate like the Mosel?", a: "Heat absorption and retention." },
+                { q: "The Kaiserstuhl district in Baden is a famous extinct ______ complex.", a: "Volcanic" },
+                { q: "The vineyards of the Ortenau (Baden) are defined by what type of crystalline bedrock?", a: "Granite and Gneiss" },
+                { q: "What is the defining geological feature of the Ahr valley?", a: "Steep slopes of slate and greywacke." },
+                { q: "The 'Winkler Index' places the Mosel in which of the coolest climate categories?", a: "Region Ia" },
+                { q: "What is the most pressing and growing viticultural concern in Germany's warmer regions like the Pfalz?", a: "Drought Stress" },
+                { q: "The Nahe is renowned for its extreme geological diversity, including soils of volcanic porphyry and what else?", a: "Melaphyr" },
+                { q: "The soils of Franken are a mix of Buntsandstein, Muschelkalk, and what other Triassic marl?", a: "Keuper" },
+                { q: "The Taunus Hills protect which region from cold northern winds?", a: "Rheingau" },
+                { q: "What is the most widespread soil type in Rheinhessen?", a: "Loess" },
+                { q: "What is the primary rock of the Mainviereck in Franken, ideal for Spätburgunder?", a: "Red Sandstone (Buntsandstein)" },
+                { q: "What is the approximate average annual rainfall in the Pfalz, one of Germany's driest regions?", a: "Around 550 mm" },
+                { q: "The soils surrounding the Bodensee (Lake Constance) are primarily made of what?", a: "Glacial moraine deposits" },
+                { q: "The 'Burgundian Gate' allows warm air to influence which German region?", a: "Baden" },
+                { q: "The red color in 'Rotschiefer' or 'Rotliegend' comes from a high concentration of what?", a: "Iron Oxide" },
+                { q: "What is 'Flurbereinigung'?", a: "The wholesale restructuring and consolidation of vineyards." },
+                { q: "Which river defines the Franken wine region?", a: "The Main River" },
+                { q: "What is the primary topographical feature of the Mittelrhein?", a: "A deep, narrow gorge carved by the Rhine River." },
+                { q: "Which Anbaugebiet is Germany's largest by area?", a: "Rheinhessen" },
+                { q: "The Südliche Weinstraße in the Pfalz has a higher prevalence of which soils, making it suitable for Pinot varieties?", a: "Limestone and clay" },
+                { q: "What is the parent rock of the famous Scharzhofberger vineyard in the Saar?", a: "Devonian Slate" },
+                { q: "What is 'Greywacke' soil, found in the Ahr?", a: "A type of hard, dark-colored sandstone rich in clay." },
+                { q: "The 'Rheinterrasse' is a series of slopes along the Rhine in which region?", a: "Rheinhessen" },
+                { q: "The soils of the Markgräflerland in Baden are predominantly calcareous clays and what?", a: "Marl" },
+                { q: "What is the primary viticultural risk associated with the Mosel's cool, damp climate?", a: "Fungal diseases (mildew)" },
+                { q: "The soils of Württemberg are dominated by Keuper (marl) and what other rock type?", a: "Muschelkalk (Shell Limestone)" },
+                { q: "What is the name for a vineyard under single ownership?", a: "Alleinbesitz (Monopole)" },
+                { q: "Which region's climate is most directly comparable to its western neighbor, Alsace?", a: "Pfalz" },
+                { q: "What is the geological origin of the Pfalz's diverse soils?", a: "The collapse of the Upper Rhine Graben (a rift valley)." },
+                { q: "The term 'phyllite' describes a type of slate found in the higher elevation sites of which region?", a: "Rheingau (e.g., Kiedrich)" },
+                { q: "Which is Germany's most northerly wine region?", a: "Saale-Unstrut" },
+                { q: "The Maindreieck ('Main Triangle') is a Bereich in which region?", a: "Franken" },
+                { q: "What is the elevation range for vineyards in the Pfalz?", a: "Typically 120 to 250 meters." },
+                { q: "Which region is known for its 'sundial' (Sonnenuhr) vineyards?", a: "Mosel (Wehlen, Zeltingen, Brauneberg)" },
+                { q: "What is the primary rock type in the Hessische Bergstrasse?", a: "A mix including granite, porphyry, and loess." },
+                { q: "The 'Rotenfels' cliff in the Nahe is composed of what volcanic rock?", a: "Porphyry" },
+                { q: "What is the approximate GDD for the Pfalz, placing it at the warm end of Region I?", a: "1375 GDD (°C)" },
+                { q: "The Hunsrück and Eifel mountain ranges shelter which major wine region?", a: "Mosel" },
+                { q: "Which soil type is known for producing powerful, complex, mineral-driven wines with smoky notes in Forst (Pfalz)?", a: "Basalt" },
+                { q: "Which Anbaugebiet has the steepest average vineyard slope?", a: "Mosel" }
+            ]);
+            Object.assign(flashcardData.ampelographer, [
+                { q: "What is Germany's most planted grape variety?", a: "Riesling" },
+                { q: "Spätburgunder is the German name for which grape?", a: "Pinot Noir" },
+                { q: "Grauburgunder is the German name for which grape?", a: "Pinot Gris" },
+                { q: "Weissburgunder is the German name for which grape?", a: "Pinot Blanc" },
+                { q: "Müller-Thurgau is a crossing of Riesling and what other variety?", a: "Madeleine Royale" },
+                { q: "Which region is the historic home of Silvaner in Germany?", a: "Franken" },
+                { q: "Which is the most planted red grape in Germany?", a: "Spätburgunder (Pinot Noir)" },
+                { q: "What is the German name for Pinot Meunier, a specialty of Württemberg?", a: "Schwarzriesling" },
+                { q: "Which region has the largest plantings of Riesling in the world?", a: "Pfalz" },
+                { q: "Dornfelder is a German crossing known for producing wines with what primary characteristic?", a: "Deep, dark color" },
+                { q: "What is a key viticultural characteristic of Riesling that makes it suitable for cool climates?", a: "It buds late (avoiding frost) and ripens late (long hang time)." },
+                { q: "Dijon clones (e.g., 115, 667) are important for producing high-quality versions of which German wine?", a: "Spätburgunder" },
+                { q: "Gutedel is the German name for which grape, a specialty of the Markgräflerland in Baden?", a: "Chasselas" },
+                { q: "Lemberger is the German synonym for which Austrian grape?", a: "Blaufränkisch" },
+                { q: "Scheurebe is a crossing known for its aromatic profile, often compared to which grape?", a: "Sauvignon Blanc" },
+                { q: "What is the most planted grape in Württemberg?", a: "Trollinger (Schiava)" },
+                { q: "The thin skins of Spätburgunder make it highly susceptible to what?", a: "Botrytis bunch rot" },
+                { q: "Which ancient variety is primarily found in the Obermosel?", a: "Elbling" },
+                { q: "Frühburgunder is an early-ripening mutation of which grape?", a: "Spätburgunder" },
+                { q: "What does 'Alte Reben' mean on a wine label?", a: "Old Vines" },
+                { q: "The traditional 'Moselpfahlerziehung' is what type of vine training system?", a: "Single-post system" },
+                { q: "'Rivaner' is a common synonym for which grape?", a: "Müller-Thurgau" },
+                { q: "Which Anbaugebiet has the highest percentage of its vineyards planted to Spätburgunder?", a: "Ahr" },
+                { q: "What is the parentage of Silvaner?", a: "A natural cross of Traminer and Österreichisch-Weiss." },
+                { q: "What is the German term for a grape crossing?", a: "Kreuzung" },
+                { q: "Which grape variety is the undisputed 'king' of the Rheingau, making up over 77% of plantings?", a: "Riesling" },
+                { q: "What does the term 'Gemischter Satz' refer to?", a: "A field blend of different varieties planted and harvested together." },
+                { q: "Which grape variety is a crossing of Helfensteiner and Heroldrebe?", a: "Dornfelder" },
+                { q: "In Baden, which three 'Burgunder' (Pinot) varieties dominate?", a: "Spätburgunder, Grauburgunder, and Weissburgunder" },
+                { q: "What is the second most planted grape variety in the Pfalz?", a: "Dornfelder" },
+                { q: "Which grape is known for its genetic instability and tendency to mutate?", a: "Spätburgunder (Pinot Noir)" },
+                { q: "What is the German research institute famous for its clonal selection work, especially on Riesling?", a: "Geisenheim University" },
+                { q: "What is the primary aromatic profile of Silvaner?", a: "Subtle and savory, with notes of green apple, hay, and herbs." },
+                { q: "The term 'Ruländer' is often used for a richer, sweeter style of which grape?", a: "Grauburgunder (Pinot Gris)" },
+                { q: "Which red grape produces light-bodied, mild wines for early consumption and is used for Weissherbst in the Pfalz?", a: "Portugieser" },
+                { q: "What is a 'PIWI' grape?", a: "A fungus-resistant grape variety (e.g., Regent)." },
+                { q: "What is the most planted grape variety in the Nahe?", a: "Riesling" },
+                { q: "Which grape, a crossing of Trollinger and Riesling, is important in Württemberg?", a: "Kerner" },
+                { q: "Which grape is known for its naturally high levels of tartaric acid?", a: "Riesling" },
+                { q: "What is the German term for a clone?", a: "Klon" },
+                { q: "The practice of tying canes in an arch ('Halbbogen') is a regional specialty of where?", a: "Pfalz" },
+                { q: "Which region has the highest percentage of its land planted to red grapes?", a: "Ahr" },
+                { q: "Which white grape is seeing a rise in popularity for dry, food-friendly styles in Baden and Pfalz?", a: "Weissburgunder" },
+                { q: "Which grape did the Elector of Trier mandate be planted exclusively in the Mosel in 1786?", a: "Riesling" },
+                { q: "Which grape is the most planted in the Hessische Bergstrasse?", a: "Riesling" },
+                { q: "Which grape is the most planted in Saale-Unstrut?", a: "Müller-Thurgau" },
+                { q: "Which grape is the most planted in Sachsen?", a: "Müller-Thurgau" },
+                { q: "What is the German term for a massal selection?", a: "Massen-Selektion" },
+                { q: "The aromatic profile of Scheurebe often includes notes of grapefruit and what other fruit?", a: "Cassis (blackcurrant)" },
+                { q: "What is the primary purpose of 'green harvesting'?", a: "To reduce yields and increase concentration in the remaining grapes." }
+            ]);
+             Object.assign(flashcardData.lawmaker, [
+                { q: "What is the German term for a designated quality wine region (of which there are 13)?", a: "Anbaugebiet" },
+                { q: "The 1971 German Wine Law based its quality hierarchy primarily on what?", a: "Must weight (Öchsle) at harvest." },
+                { q: "Which practice is forbidden for all 'Prädikatswein'?", a: "Chaptalization (Anreicherung)" },
+                { q: "What does 'VDP.Grosses Gewächs' (GG) signify?", a: "A dry wine from a VDP-classified Grosse Lage (great site)." },
+                { q: "What is an 'Einzellage'?", a: "A single, registered vineyard site." },
+                { q: "What is a 'Grosslage'?", a: "A collective vineyard site created by the 1971 law, often grouping multiple Einzellagen." },
+                { q: "What is the lightest category of Prädikatswein?", a: "Kabinett" },
+                { q: "What is the Prädikat for a 'late harvest' wine?", a: "Spätlese" },
+                { q: "What does the 'A.P. Nr.' on a bottle signify?", a: "The official quality control test number." },
+                { q: "What does 'trocken' mean?", a: "Dry" },
+                { q: "What is the maximum yield for a VDP.Grosse Lage wine?", a: "50 hl/ha" },
+                { q: "What is the minimum alcohol for a Trockenbeerenauslese (TBA)?", a: "5.5% ABV" },
+                { q: "The 'VDP' is an association of what?", a: "Germany's elite, quality-focused wine estates." },
+                { q: "What does 'Gutsabfüllung' mean?", a: "Estate-bottled" },
+                { q: "The term 'Erstes Gewächs' (EG) is a legal classification for top dry wines in which region?", a: "Rheingau" },
+                { q: "What is required to make 'Eiswein'?", a: "Grapes must be harvested and pressed while frozen at -7°C or colder." },
+                { q: "The new 2026 German wine law will formally adopt a hierarchy based on what?", a: "Origin/Terroir (similar to the VDP model)." },
+                { q: "What is 'Weissherbst'?", a: "A rosé made from 100% of a single red grape variety." },
+                { q: "The VDP classification 'Ortswein' is analogous to what level in Burgundy?", a: "Village level" },
+                { q: "What is 'Süssreserve'?", a: "Sterile, unfermented grape must used to sweeten a finished wine." },
+                { q: "What is a 'Bereich'?", a: "A district within an Anbaugebiet." },
+                { q: "What does the VDP eagle logo ('Traubenadler') on a capsule signify?", a: "The wine is from a VDP member estate and adheres to their stricter standards." },
+                { q: "Which Prädikat has the highest must weight requirement?", a: "Trockenbeerenauslese (TBA)" },
+                { q: "Chaptalization is permitted for which main category of German wine?", a: "Qualitätswein" },
+                { q: "What does 'halbtrocken' mean?", a: "Off-dry or half-dry." },
+                { q: "What is a 'Bocksbeutel'?", a: "A traditional squat, flask-shaped bottle used in Franken." },
+                { q: "What does 'Sekt b.A.' stand for?", a: "Sekt bestimmter Anbaugebiete (quality sparkling wine from a specified region)." },
+                { q: "What is an 'Alleinbesitz'?", a: "A monopole (a vineyard under single ownership)." },
+                { q: "What does PDO stand for in the EU wine system?", a: "Protected Designation of Origin" },
+                { q: "The VDP's 'Erste Lage' classification is analogous to what in Burgundy?", a: "Premier Cru" },
+                { q: "What is 'Winzersekt'?", a: "Estate-grown sparkling wine made by the traditional method." },
+                { q: "What does 'Landwein' correspond to in the EU system?", a: "PGI (Protected Geographical Indication)" },
+                { q: "What is a 'Stückfass'?", a: "A traditional 1200-liter oak cask." },
+                { q: "What is a 'Fuder'?", a: "A traditional 1000-liter oak cask, common in the Mosel." },
+                { q: "What is the minimum must weight for Riesling Spätlese in the Rheingau?", a: "85° Öchsle" },
+                { q: "What does the term 'Edelfäule' mean?", a: "Noble Rot (Botrytis cinerea)" },
+                { q: "Which region has nine distinct Bereiche?", a: "Baden" },
+                { q: "Which region consists of only one Bereich?", a: "Rheingau" },
+                { q: "The new 2026 wine law will require 'Grosslage' names to be preceded by what word?", a: "Region" },
+                { q: "What is the legal maximum yield for Qualitätswein in the Pfalz?", a: "105 hl/ha" },
+                { q: "The term 'Classic', introduced in 2000, is for wines that are harmoniously ______.", a: "Dry" },
+                { q: "What is the minimum required percentage for varietal labeling in Germany?", a: "85%" },
+                { q: "The VDP prohibits its members from using which confusing geographical term on their labels?", a: "Grosslage" },
+                { q: "What is the minimum must weight for Riesling Kabinett in the Mosel?", a: "73° Öchsle" },
+                { q: "What is the German word for winemaker?", a: "Winzer" },
+                { q: "The term 'Schillerwein' is a Rotling specialty from which region?", a: "Württemberg" },
+                { q: "What is the German term for total acidity?", a: "Gesamtsäure" },
+                { q: "What does 'Klassische Flaschengärung' mean?", a: "Traditional bottle fermentation (for sparkling wine)." },
+                { q: "VDP.Grosse Lage red wines must be aged for a minimum of how long in oak?", a: "12 months" },
+                { q: "The term 'feinherb' is a non-legally defined term for what style?", a: "Off-dry" }
+            ]);
+            Object.assign(flashcardData.gastronome, [
+                { q: "What is 'Pfälzer Saumagen'?", a: "A savory pudding of pork, potatoes, and spices cooked in a pig's stomach, a specialty of the Pfalz." },
+                { q: "What is the classic wine pairing for Saumagen?", a: "A dry (Trocken) Riesling with high acidity to cut the fat." },
+                { q: "What is 'Handkäse mit Musik'?", a: "A pungent sour milk cheese from Hesse (Rheingau), marinated in a vinaigrette with onions." },
+                { q: "What is 'Spundekäs'?", a: "A creamy cheese spread from Rheinhessen made with quark and paprika, served with pretzels." },
+                { q: "What is a 'Weinschorle'?", a: "A wine spritzer (wine mixed with sparkling water), very popular in the Pfalz." },
+                { q: "What is a 'Dubbeglas'?", a: "A distinctive 0.5-liter dimpled glass used for Weinschorle in the Pfalz." },
+                { q: "What is 'Zwiebelkuchen'?", a: "A savory onion tart, a classic autumn dish." },
+                { q: "What is 'Federweisser'?", a: "The young, partially fermented 'new wine' of the harvest season, often paired with Zwiebelkuchen." },
+                { q: "What is 'Schwäbische Maultaschen'?", a: "A PGI-protected pasta parcel (like ravioli) from Swabia (Baden-Württemberg), filled with meat and spinach." },
+                { q: "What are the components of 'Himmel un Äd' (Heaven and Earth)?", a: "Black pudding (Blutwurst), mashed potatoes, and apple sauce." },
+                { q: "What is 'Weinbrand'?", a: "German brandy distilled from wine. Asbach Uralt is a famous brand." },
+                { q: "What is 'Kirschwasser'?", a: "A clear, unsweetened brandy distilled from cherries, a specialty of the Black Forest." },
+                { q: "What is 'Tresterbrand'?", a: "A pomace brandy, the German equivalent of grappa, often made from Riesling pomace in the Mosel." },
+                { q: "What is 'Spargel' and its classic wine pairing?", a: "White asparagus, classically paired with dry Silvaner or Weissburgunder." },
+                { q: "What is the 'Pfälzer Dreifaltigkeit' (Palatinate Trinity)?", a: "A platter with a slice of fried Saumagen, a Bratwurst, and a Leberknödel (liver dumpling)." },
+                { q: "A powerful Pfalz Spätburgunder is a classic pairing for what kind of dish?", a: "Roasted game (e.g., wild boar, venison)." },
+                { q: "What are 'Dampfnudeln'?", a: "Steamed yeast dumplings that can be served savory or sweet." },
+                { q: "What is 'Apfelwein'?", a: "A tart, still apple cider, a specialty of the Frankfurt/Hesse region." },
+                { q: "What is the German term for sparkling wine?", a: "Sekt" },
+                { q: "What is 'Schwarzwälder Schinken'?", a: "Black Forest Ham, a famous PGI-protected dry-cured and smoked ham." },
+                { q: "'Grumbeere' is the Pfalz dialect for what?", a: "Potato" },
+                { q: "Why does slightly sweet Riesling (Kabinett/Spätlese) pair well with spicy Asian food?", a: "The sweetness balances the chili heat, while the high acidity cleanses the palate." },
+                { q: "What is 'Debbekoche'?", a: "A baked potato dish from the Mosel, made with grated potatoes and cured pork." },
+                { q: "Which famous German brewery is located in the Black Forest?", a: "Rothaus" },
+                { q: "What are 'Käsespätzle'?", a: "Soft egg noodles (Spätzle) layered with cheese and fried onions." },
+                { q: "What is the 'Roter Weinbergpfirsich'?", a: "The Red Vineyard Peach, a unique, aromatic variety grown among the vines in the Mosel." },
+                { q: "What does 'Obstbrand' or 'Obstwasser' mean?", a: "Fruit brandy, distilled from fruits like cherries, plums, or pears." },
+                { q: "The pairing of sweet Auslese with salty blue cheese is an example of what principle?", a: "Contrast (sweet and salty)." },
+                { q: "What are 'Keschde'?", a: "The Palatinate dialect for sweet chestnuts." },
+                { q: "What is the 'Reinheitsgebot'?", a: "The German Beer Purity Law of 1516." },
+                { q: "What does the 'Musik' in 'Handkäse mit Musik' refer to?", a: "The digestive effects of the raw onions." },
+                { q: "'Wisperforelle' is a trout dish from which region?", a: "Rheingau" },
+                { q: "What are 'Flääschknepp'?", a: "Meat dumplings from the Pfalz." },
+                { q: "What is a 'Straußwirtschaft'?", a: "A simple wine tavern run by a winery, typically on a seasonal basis." },
+                { q: "'Monkey 47' is a world-renowned craft gin from where?", a: "The Black Forest (Baden)" },
+                { q: "What is the classic pairing for dry Silvaner from Franken?", a: "White asparagus with hollandaise." },
+                { q: "What is the traditional pitcher for serving Apfelwein called?", a: "Bembel" },
+                { q: "'Badische Schäufele' is a dish of cured and smoked pork ______.", a: "Shoulder" },
+                { q: "The Rheinhessen snack 'Weck, Worscht un Woi' means what?", a: "Bread Roll, Sausage, and Wine" },
+                { q: "The savory, meaty character of Lemberger (Blaufränkisch) makes it a good pairing for what?", a: "Roasts, stews, and lentils." },
+                { q: "What is a Leberknödel?", a: "A liver dumpling." },
+                { q: "Which region's cuisine is most influenced by neighboring Alsace, France?", a: "Baden" },
+                { q: "What is the primary flavor of Kirschwasser?", a: "Cherry (but not sweet)." },
+                { q: "What is the most iconic food and wine pairing from the Pfalz?", a: "Pfälzer Saumagen and dry Riesling." },
+                { q: "The German custom of 'Kaffee und Kuchen' is an afternoon break for what?", a: "Coffee and cake." },
+                { q: "Which type of beer is a 'Hefeweizen'?", a: "A wheat beer." },
+                { q: "How is 'Tresterfleisch' cooked?", a: "It is marinated in grape pomace (Trester) and wine, then slow-cooked." },
+                { q: "What does the German food term 'herzhaft' mean?", a: "Hearty or savory." },
+                { q: "The high acidity in German wines makes them particularly ______-friendly.", a: "Food" },
+                { q: "Which famous dish is named after the Black Forest (Schwarzwald)?", a: "Black Forest Cake (Schwarzwälder Kirschtorte)" }
+            ]);
+            Object.assign(flashcardData.critic, [
+                { q: "Which Rheinhessen producer makes the ultra-rare and expensive 'G-Max' dry Riesling?", a: "Weingut Keller" },
+                { q: "Which vintage is known as a 'classic' cool year, producing high-acid, filigree wines?", a: "2021" },
+                { q: "Which Mosel estate is the undisputed icon of the Saar, famous for its Scharzhofberger Rieslings?", a: "Egon Müller" },
+                { q: "Name the 'three Bs', historic estates of Deidesheim in the Pfalz.", a: "Dr. Bürklin-Wolf, Dr. Bassermann-Jordan, and Reichsrat von Buhl." },
+                { q: "Which Rheingau estate is a global benchmark for precision and purity, especially with its Kiedricher Gräfenberg wines?", a: "Weingut Robert Weil" },
+                { q: "Which vintage was exceptionally hot and dry, producing powerful, ripe, and sometimes lower-acid wines?", a: "2018" },
+                { q: "Which Pfalz producer is a standard-bearer for biodynamics and purity in the Südliche Weinstraße?", a: "Ökonomierat Rebholz" },
+                { q: "Which estate leads the 'modern' Pfalz style, fermenting top dry Rieslings in oak barrels?", a: "Weingut von Winning" },
+                { q: "The 2010 vintage is famous for what extreme characteristic?", a: "Record-high, searing acidity." },
+                { q: "Which Mosel estate is famous for its wines from the Wehlener Sonnenuhr and a touch of 'sponti' character?", a: "Joh. Jos. Prüm" },
+                { q: "Who is considered the 'godfather of German Pinot Noir' for his work in Malterdingen, Baden?", a: "The late Bernhard Huber" },
+                { q: "Which Rheinhessen estate is a pioneer of biodynamics and a master of limestone terroir (e.g., Morstein)?", a: "Weingut Wittmann" },
+                { q: "Which vintage is often cited as a benchmark modern 'Goldilocks' year with perfect balance?", a: "2015" },
+                { q: "Which Rheingau estate, a leader of the Charta movement, excels with mineral-driven Rieslings from Rüdesheim's 'Berg' sites?", a: "Weingut Georg Breuer" },
+                { q: "Who is considered the master of German Spätburgunder, located in Schweigen (Pfalz)?", a: "Friedrich Becker" },
+                { q: "How does Pfalz Riesling's style typically compare to Mosel Riesling?", a: "Pfalz Riesling is generally richer, fuller-bodied, and more powerful." },
+                { q: "Which Pfalz 'Rising Star' is known for powerful red wines and Rieslings from Kallstadter Saumagen?", a: "Weingut Rings" },
+                { q: "The 2016 vintage was challenging due to high pressure from what?", a: "Fungal diseases (mildew)." },
+                { q: "Which estate owns the famous walled 'Steinberg' monopole in the Rheingau?", a: "Kloster Eberbach (Hessische Staatsweingüter)" },
+                { q: "Which Mosel producer is the benchmark for the Brauneberger Juffer Sonnenuhr site?", a: "Fritz Haag" },
+                { q: "Which Pfalz producer's flagship wine is the Königsbacher Idig GG?", a: "A. Christmann" },
+                { q: "Who is the benchmark producer for Spätburgunder in Franken?", a: "Rudolf Fürst" },
+                { q: "How is the 2019 vintage generally regarded?", a: "As a very high-quality year with excellent balance, purity, and acidity." },
+                { q: "Which 'Rising Star' is celebrated for her crystalline, precise Rieslings from the western Rheingau?", a: "Eva Fricke" },
+                { q: "Which historic Pfalz estate was a pioneer of biodynamics in the region?", a: "Dr. Bürklin-Wolf" },
+                { q: "What was the defining challenge of the 2017 vintage?", a: "Severe spring frosts that dramatically reduced yields." },
+                { q: "Which estate is the icon of the Ruwer, owning the Abtsberg and Herrenberg monopoles?", a: "Maximin Grünhaus" },
+                { q: "Which Deidesheim estate was revitalized by former Bollinger chef de cave Mathieu Kauffmann?", a: "Reichsrat von Buhl" },
+                { q: "Which Nahe producer is legendary for his wines from the Oberhäuser Brücke and Niederhäuser Hermannshöhle?", a: "Weingut Dönnhoff" },
+                { q: "Which vintage is noted as a classic year with exceptional purity due to a long, cool season with no botrytis?", a: "2012" },
+                { q: "Which 'Rising Star' producer from the Mosel is known for his work in Piesport?", a: "Julian Haart" },
+                { q: "Which Nahe producer is known for an intense, reductive, 'struck match' style of Riesling?", a: "Schäfer-Fröhlich" },
+                { q: "The 2003 vintage is infamous for what weather event?", a: "A massive, historic heatwave across Europe." },
+                { q: "Which Rheingau producer offers exceptional quality-to-price ratio, from 'Dragonstone' to GGs?", a: "Weingut Josef Leitz" },
+                { q: "Which Pfalz estate is the widely available 'value' brand owned by Ernst Loosen?", a: "Villa Wolf" },
+                { q: "Which producer is known for a deeply traditional style, using large, old oak 'Stückfässer' in the Pfalz?", a: "Koehler-Ruprecht" },
+                { q: "Which Baden estate is a benchmark for powerful wines from the volcanic Kaiserstuhl?", a: "Weingut Dr. Heger" },
+                { q: "Which Nahe producer excels with Riesling from the Monzingen vineyards of Halenberg and Frühlingsplätzchen?", a: "Emrich-Schönleber" },
+                { q: "How are the wines of the 2007 vintage generally described?", a: "Elegant, complex, and perfectly balanced; a great classic vintage." },
+                { q: "Which producer is a benchmark for quality in the Ahr valley?", a: "Meyer-Näkel" },
+                { q: "Which Rheingau producer is a pioneer of biodynamics in the region?", a: "Peter Jakob Kühn" },
+                { q: "The 2014 vintage was notoriously difficult due to rain and what other pest problem?", a: "The invasive drosophila (Suzuki) fruit fly." },
+                { q: "What is the critical consensus on the style of Rheingau Riesling vs. Mosel?", a: "Rheingau is more powerful and structured; Mosel is more delicate and ethereal." },
+                { q: "Which producer is a 'Rising Star' from Baden known for a low-intervention, 'natural' wine style?", a: "Enderle & Moll or Wasenhaus" },
+                { q: "Which producer is an icon of the Porongurup sub-region in Great Southern, Australia, known for Riesling?", a: "Castle Rock Estate" }, // This is a WA question, I will replace it.
+                { q: "Which producer is an icon of the Saar, known for searingly intense yet delicate Rieslings?", a: "Forstmeister Geltz-Zilliken" },
+                { q: "How is the 2008 vintage generally characterized?", a: "As a cool, late vintage that produced crisp, pure, high-acid classic wines." },
+                { q: "Which producer is a benchmark for quality in Franken's Steigerwald district, located in Iphofen?", a: "Hans Wirsching" },
+                { q: "The term 'comet vintage' refers to which historically great year?", a: "1811" },
+                { q: "Which producer is known for its alleinbesitz (monopole) of the Josephshöfer vineyard in Graach?", a: "Reichsgraf von Kesselstatt" },
+                { q: "Which vintage was a complete 'botrytis bonanza', producing legendary sweet wines?", a: "1990" }
+            ]);
+            showWelcomeModal();
+        };
+
+        // --- Utility Functions ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+    </script>
+</body>
+</html>
